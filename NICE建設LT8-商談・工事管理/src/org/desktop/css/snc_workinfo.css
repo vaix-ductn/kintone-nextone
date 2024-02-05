@@ -1,0 +1,55 @@
+@charset "utf-8";
+/* CSS Document */
+
+.sampleTable
+{
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.sampleTable th,
+.sampleTable td
+{
+    border: 1px solid #CCCCCC;
+    padding: 5px 10px;
+    text-align: left;
+}
+
+.sampleTable th
+{
+    background-color: #FFFFFF;
+}
+
+button.dropbox
+{
+	margin-left:10px;
+	margin-right:10px;
+	cursor: pointer;
+}
+
+a.dropbox
+{
+	margin-left:5px;
+	margin-right:5px;
+	cursor: pointer;
+}
+
+img.dropbox
+{
+	margin-top:5px;
+	margin-left:5px;
+	cursor: pointer;
+}
+
+span.dropbox
+{
+	margin-top:5px;
+	margin-left:5px;
+	cursor: pointer;
+}
+
+.inner
+{
+  	display: table-cell;
+  	vertical-align: middle;
+}
