@@ -1,0 +1,114 @@
+.record-icon-detail {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 16px;
+    width: 12px;
+    height: 16px;
+    background: url(https://static.cybozu.com/contents/k/image/argo/component/recordlist/record-detail.png) no-repeat center center;
+}
+
+#list_viewer_area {
+    width: 100%;
+    overflow-x: auto;
+    position: relative;
+}
+
+#table-container {
+    position: relative;
+}
+
+#list_viewer_area table#table-fixedheader {
+    position: fixed;
+    top: 48px;
+    z-index: 9999 !important;
+    height: 54px;
+    left: 0px;
+}
+
+#list_viewer_area table#table-fixedheader thead th{
+    z-index: 9999;
+}
+
+#list_viewer_area table thead > th:first-child {
+    position: sticky;
+    left: 0;
+    background-color: #ffffff;
+    z-index: 1;
+}
+
+#list_viewer_area table thead > th:nth-child(2) {
+    position: sticky;
+    left: 50px;
+    background-color: #ffffff;
+    z-index: 1;
+}
+
+#list_viewer_area table thead > th:nth-child(3) {
+    position: sticky;
+    left: 151px;
+    background-color: #ffffff;
+    z-index: 1;
+}
+
+
+#list_viewer_area table tbody tr > td:first-child:not([subtable]) {
+    position: sticky;
+    left: 0;
+}
+
+#list_viewer_area table tbody tr > td:nth-child(2):not([subtable]) {
+    position: sticky;
+    left: 50px;
+}
+
+#list_viewer_area table tbody tr > td:nth-child(3):not([subtable]) {
+    position: sticky;
+    left: 151px;
+}
+
+#list_viewer_area table select {
+    height: 32px;
+    min-width: 100px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#list_viewer_area table input[type="date"] {
+    height: 30px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#list_viewer_area table input[type="number"] {
+    height: 28px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#list_viewer_area table input[type="text"] {
+    height: 28px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#list_viewer_area table tbody .recordlist-row-gaia:nth-child(odd),
+#list_viewer_area table tbody .recordlist-row-gaia:nth-child(even) {
+    background-color: unset;
+}
+
+#list_viewer_area table tbody .recordlist-cell-gaia {
+    border-bottom: 1px solid #e3e7e8;
+}
+
+
+#list_viewer_area table tbody tr.record-odd td {
+    background-color: #ffffff;
+}
+
+#list_viewer_area table tbody tr.record-even td {
+    background-color: #f5f5f5;
+}
+
+

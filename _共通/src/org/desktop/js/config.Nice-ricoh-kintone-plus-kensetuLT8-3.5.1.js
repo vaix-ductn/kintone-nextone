@@ -328,6 +328,16 @@
         kouji: {
             app: 1031,
             fields: {
+                'kijunBi': {
+                    'code': 'cf_基準日',
+                    'shown': true,
+                    'disabled': false
+                },
+                'jokyo': {
+                    'code': 'cf_状況',
+                    'shown': true,
+                    'disabled': true
+                },
                 //--担当者--------------------------------------------------------------
                 'tantoshaSearch': {
                     'code': 'nok_担当者検索',
@@ -356,6 +366,39 @@
                 },
                 'tantoshaSosiki': {
                     'code': 'nok_担当者組織',
+                    'shown': false,
+                    'disabled': true
+                },
+                //--設計担当者--------------------------------------------------------------
+                'sekkeiTantoshaSearch': {
+                    'code': 'nok_設計担当者検索',
+                    'shown': true,
+                    'disabled': false
+                },
+                'sekkeiTantoshaMei': {
+                    'code': 'nok_設計担当者名',
+                    'shown': false,
+                    'disabled': true
+                },
+                //--CD担当者--------------------------------------------------------------
+                'cdTantoshaSearch': {
+                    'code': 'nok_CD担当者検索',
+                    'shown': true,
+                    'disabled': false
+                },
+                'cdTantoshaMei': {
+                    'code': 'nok_CD担当者名',
+                    'shown': false,
+                    'disabled': true
+                },
+                //--工務担当者--------------------------------------------------------------
+                'komuTantoshaSearch': {
+                    'code': 'nok_工務担当者検索',
+                    'shown': true,
+                    'disabled': false
+                },
+                'komuTantoshaMei': {
+                    'code': 'nok_工務担当者名',
                     'shown': false,
                     'disabled': true
                 },
@@ -412,6 +455,96 @@
                     'shown': true,
                     'disabled': true,
                 },
+                'genbaJusho': {
+                    'code': 'nok_現場住所',
+                    'shown': true,
+                    'disabled': false
+                },
+                'modelHouseMei': {
+                    'code': 'nok_モデルハウス名',
+                    'shown': true,
+                    'disabled': false
+                },
+                'series': {
+                    'code': 'nok_シリーズ',
+                    'shown': true,
+                    'disabled': false
+                },
+                'tsubosu': {
+                    'code': 'nok_坪数',
+                    'shown': true,
+                    'disabled': false
+                },
+                'juchuKingaku': {
+                    'code': 'nok_受注金額',
+                    'shown': true,
+                    'disabled': false
+                },
+                'kasaiHoken': {
+                    'code': 'nok_火災保険',
+                    'shown': true,
+                    'disabled': false
+                },
+                'shihoshoshi': {
+                    'code': 'nok_司法書士',
+                    'shown': true,
+                    'disabled': false
+                },
+                'ginkoMei': {
+                    'code': 'nok_銀行名',
+                    'shown': true,
+                    'disabled': false
+                },
+                'kengakuKai': {
+                    'code': 'cf_見学会',
+                    'shown': true,
+                    'disabled': false
+                },
+                'tochiKubun': {
+                    'code': 'nok_土地区分',
+                    'shown': true,
+                    'disabled': false
+                },
+                'jigyobu': {
+                    'code': 'nok_事業部',
+                    'shown': true,
+                    'disabled': false
+                },
+                'arari': {
+                    'code': 'nok_粗利',
+                    'shown': true,
+                    'disabled': true
+                },
+                'tochi': {
+                    'code': 'nok_土地',
+                    'shown': true,
+                    'disabled': true
+                },
+                'kaitsuke': {
+                    'code': 'nok_買付',
+                    'shown': true,
+                    'disabled': true
+                },
+                'keiyaku': {
+                    'code': 'nok_契約',
+                    'shown': true,
+                    'disabled': true
+                },
+                'sekkeiHikitsugi': {
+                    'code': 'nok_設計引継',
+                    'shown': true,
+                    'disabled': true
+                },
+                'jizenShinseiKyoka': {
+                    'code': 'nok_事前申請許可',
+                    'shown': true,
+                    'disabled': true
+                },
+                'puranKakutei': {
+                    'code': 'nok_プラン確定',
+                    'shown': true,
+                    'disabled': true
+                },
                 //---------------------------------------------------------------------
                 'roumuhi': {
                     'code': 'nok_労務費合計',
@@ -432,6 +565,247 @@
                     'code': 'nok_経費合計',
                     'shown': true,
                     'disabled': true
+                },
+                //--担当者テーブル------------------------------------------------
+                'tantoshaTB': {
+                    'code': 'cf_担当者TB',
+                    'shown': true,
+                    'disabled': false
+                },
+                'tantoshaBunrui_TB': {
+                    'code': 'cf_担当者TB_担当者分類'
+                },
+                'tantoshaSearch_TB': {
+                    'code': 'cf_担当者TB_担当者検索'
+                },
+                'tantoshaMei_TB': {
+                    'code': 'cf_担当者TB_担当者名'
+                },
+                //--外注テーブル------------------------------------------------
+                'gaichuTB': {
+                    'code': 'cf_外注TB',
+                    'shown': true,
+                    'disabled': false
+                },
+                'gaichuBunrui_TB': {
+                    'code': 'cf_外注TB_外注分類'
+                },
+                'gaichuSearch_TB': {
+                    'code': 'cf_外注TB_外注分類_外注検索'
+                },
+                'gaichuMei_TB': {
+                    'code': 'cf_外注TB_外注名'
+                },
+                //--その他テーブル------------------------------------------------
+                'sonohokaTB': {
+                    'code': 'nok_その他TB',
+                    'shown': true,
+                    'disabled': false
+                },
+                'ko_sonohokaTB': {
+                    'code': 'nok_その他TB_項'
+                },
+                'bunrui_sonohokaTB': {
+                    'code': 'nok_その他TB_分類'
+                },
+                'hidzuke_sonohokaTB': {
+                    'code': 'nok_その他TB_日付'
+                },
+                'kingaku_sonohokaTB': {
+                    'code': 'nok_その他TB_金額'
+                },
+
+                //--入金情報テーブル------------------------------------------------
+                'nyukinJohoTB': {
+                    'code': 'nok_入金情報TB',
+                    'shown': true,
+                    'disabled': false
+                },
+                'ko_nyukinJohoTB': {
+                    'code': 'nok_入金情報TB_項'
+                },
+                'bunrui_nyukinJohoTB': {
+                    'code': 'nok_入金情報TB_分類'
+                },
+                'hidzuke_nyukinJohoTB': {
+                    'code': 'nok_入金情報TB_日付'
+                },
+                'kingaku_nyukinJohoTB': {
+                    'code': 'nok_入金情報TB_金額'
+                },
+                'uuid_nyukinJohoTB': {
+                    'code': 'nok_入金情報TB_uuid'
+                },
+                //--原価売上テーブル------------------------------------------------
+                'genkaUriageTB': {
+                    'code': 'nok_原価売上TB',
+                    'shown': true,
+                    'disabled': false
+                },
+                'bunrui_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_分類'
+                },
+                'uriage_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_売上'
+                },
+                'genka_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_原価'
+                },
+                'arari_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_粗利'
+                },
+                'arariRitsu_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_粗利率'
+                },
+                'tatemonoHontai_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_建物本体'
+                },
+                'futaiKoji_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_付帯工事'
+                },
+                'option_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_オプション'
+                },
+                'nebikiService_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_値引サービス'
+                },
+                'kenchikuShoHiyo_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_建築諸費用'
+                },
+                'gokei_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_合計'
+                },
+                'tatemonoHontaiGenka_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_建物本体_原価'
+                },
+                'futaiKojiGenka_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_付帯工事_原価'
+                },
+                'optionGenka_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_オプション_原価'
+                },
+                'nebikiServiceGenka_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_値引サービス_原価'
+                },
+                'kenchikuShoHiyoGenka_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_建築諸費用_原価'
+                },
+                'gokeiGenka_genkaUriageTB': {
+                    'code': 'nok_原価粗利TB_合計_原価'
+                },
+                //--日程テーブル------------------------------------------------
+                'nitteiTB': {
+                    'code': 'nok_日程TB',
+                    'shown': true,
+                    'disabled': false
+                },
+                'bunrui_nitteiTB': {
+                    'code': 'nok_日程TB_分類'
+                },
+                'keiyaku_nitteiTB': {
+                    'code': 'nok_日程TB_契約'
+                },
+                'keiyakuKin_nitteiTB': {
+                    'code': 'nok_日程TB_契約金'
+                },
+                'tochiKeiyaku_nitteiTB': {
+                    'code': 'nok_日程TB_土地契約'
+                },
+                'honYushiMoshikomi_nitteiTB': {
+                    'code': 'nok_日程TB_本融資申込'
+                },
+                'yushiNaidaku_nitteiTB': {
+                    'code': 'nok_日程TB_融資内諾'
+                },
+                'tochiKessai_nitteiTB': {
+                    'code': 'nok_日程TB_土地決済'
+                },
+                'zumenIrai_nitteiTB': {
+                    'code': 'nok_日程TB_図面依頼'
+                },
+                'sekkeiHikitsugi_nitteiTB': {
+                    'code': 'nok_日程TB_設計引継'
+                },
+                'zumenKakutei_nitteiTB': {
+                    'code': 'nok_日程TB_図面確定'
+                },
+                'kakuninShinseiTeishutsu_nitteiTB': {
+                    'code': 'nok_日程TB_確認申請提出'
+                },
+                'kakuninShinseiKyoka_nitteiTB': {
+                    'code': 'nok_日程TB_確認申請許可'
+                },
+                'jibanChosa_nitteiTB': {
+                    'code': 'nok_日程TB_地盤調査'
+                },
+                'jichinsai_nitteiTB': {
+                    'code': 'nok_日程TB_地鎮祭'
+                },
+                'kairyoKoji_nitteiTB': {
+                    'code': 'nok_日程TB_改良工事'
+                },
+                'chakkoMaeUchiawase_nitteiTB': {
+                    'code': 'nok_日程TB_着工前打合せ'
+                },
+                'chakkoKinNyukin_nitteiTB': {
+                    'code': 'nok_日程TB_着工金入金'
+                },
+                'chakkoKin_nitteiTB': {
+                    'code': 'nok_日程TB_着工金'
+                },
+                'chakko_nitteiTB': {
+                    'code': 'nok_日程TB_着工'
+                },
+                'haikinkensa_nitteiTB': {
+                    'code': 'nok_日程TB_配筋検査'
+                },
+                'kiIshizueKanryo_nitteiTB': {
+                    'code': 'nok_日程TB_基礎完了'
+                },
+                'dodaishiki_nitteiTB': {
+                    'code': 'nok_日程TB_土台敷き'
+                },
+                'jotoKinNyuKinBi_nitteiTB': {
+                    'code': 'nok_日程TB_上棟金入金日'
+                },
+                'jotoKin_nitteiTB': {
+                    'code': 'nok_日程TB_上棟金'
+                },
+                'joto_nitteiTB': {
+                    'code': 'nok_日程TB_上棟'
+                },
+                'mukuroTaiKensa_nitteiTB': {
+                    'code': 'nok_日程TB_躯体検査'
+                },
+                'bosuiKensa_nitteiTB': {
+                    'code': 'nok_日程TB_防水検査'
+                },
+                'mokukojiKanryo_nitteiTB': {
+                    'code': 'nok_日程TB_木工事完了'
+                },
+                'kurosuKanryo_nitteiTB': {
+                    'code': 'nok_日程TB_クロス完了'
+                },
+                'kurininguKanryo_nitteiTB': {
+                    'code': 'nok_日程TB_クリーニング完了'
+                },
+                'shanaiShunko_nitteiTB': {
+                    'code': 'nok_日程TB_社内竣工'
+                },
+                'shunkoNaoshiKanryo_nitteiTB': {
+                    'code': 'nok_日程TB_竣工直し完了'
+                },
+                'shunko_nitteiTB': {
+                    'code': 'nok_日程TB_竣工'
+                },
+                'saishuNyukinBi_nitteiTB': {
+                    'code': 'nok_日程TB_最終入金日'
+                },
+                'nyuKingaku_nitteiTB': {
+                    'code': 'nok_日程TB_入金額'
+                },
+                'hikiwatashiBi_nitteiTB': {
+                    'code': 'nok_日程TB_引渡日'
                 },
                 //--入金情報テーブル------------------------------------------------
                 'meisaiTB': {
@@ -474,6 +848,9 @@
                 'kouji_recordNo': {
                     'code': 'nok_工事レコード番号'
                 },
+                'createdAt': {
+                    'code': '作成日時'
+                }
             },
             //--案件管理ダイアログ設定----------------------
             koujikanriDaialog: {
