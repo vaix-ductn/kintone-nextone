@@ -17,375 +17,15 @@
  * @customer （2023-06-25）
 */
 jQuery.noConflict();
-(function ($, config, sncLib) {
+(function ($, config, sncLib, editTableCfg) {
     'use strict';
     const cfgKouji = config.kouji;
     const cfgKoujiFields = config.kouji.fields;
     let nonEditFields = null;
+    // 編集実行回数をカウントするグローバル変数
     let execNum = 0;
     let koujiDataPerPage = null;
 
-    // 着工前物件
-    const shinchokuKanriView = [
-        {
-            fieldCode: cfgKoujiFields.koujiId.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.kokyakumei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.genbaJusho.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.modelHouseMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.series.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.tsubosu.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.juchuKingaku.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.tantoshaMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.sekkeiTantoshaMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.cdTantoshaMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.komuTantoshaMei.code,
-        },
-        // subtable
-        {
-            fieldCode: cfgKoujiFields.gaichuTB.code,
-            fieldsInSubtable: [
-                {
-                    fieldCode: cfgKoujiFields.gaichuBunrui_TB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.gaichuSearch_TB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.gaichuMei_TB.code,
-                },
-            ]
-        },
-        {
-            fieldCode: cfgKoujiFields.kasaiHoken.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.shihoshoshi.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.ginkoMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.kengakuKai.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.nitteiTB.code,
-            fieldsInSubtable: [
-                {
-                    fieldCode: cfgKoujiFields.bunrui_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.keiyaku_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.keiyakuKin_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.tochiKeiyaku_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.honYushiMoshikomi_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.yushiNaidaku_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.tochiKessai_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.zumenIrai_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.sekkeiHikitsugi_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.zumenKakutei_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.kakuninShinseiTeishutsu_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.kakuninShinseiKyoka_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.jibanChosa_nitteiTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.jichinsai_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.kairyoKoji_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.chakkoMaeUchiawase_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.chakkoKinNyukin_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.chakkoKin_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.chakko_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.haikinkensa_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.kiIshizueKanryo_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.dodaishiki_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.jotoKinNyuKinBi_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.jotoKin_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.joto_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.mukuroTaiKensa_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.bosuiKensa_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.mokukojiKanryo_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.kurosuKanryo_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.kurininguKanryo_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.shanaiShunko_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.shunkoNaoshiKanryo_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.shunko_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.saishuNyukinBi_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.nyuKingaku_nitteiTB.code
-                },
-                {
-                    fieldCode: cfgKoujiFields.hikiwatashiBi_nitteiTB.code
-                },
-            ]
-        },
-    ];
-
-    // 原価粗利表
-    const genkaArariView = [
-        {
-            fieldCode: cfgKoujiFields.kouji_recordNo.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.kokyakumei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.modelHouseMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.tochiKubun.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.jigyobu.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.series.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.tantoshaMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.sekkeiTantoshaMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.cdTantoshaMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.komuTantoshaMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.juchuKingaku.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.arari.code,
-        },
-        // subtable
-        {
-            fieldCode: cfgKoujiFields.genkaUriageTB.code,
-            fieldsInSubtable: [
-                {
-                    fieldCode: cfgKoujiFields.bunrui_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.uriage_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.genka_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.arari_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.arariRitsu_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.tatemonoHontai_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.futaiKoji_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.option_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.nebikiService_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.kenchikuShoHiyo_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.gokei_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.tatemonoHontaiGenka_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.futaiKojiGenka_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.optionGenka_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.nebikiServiceGenka_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.kenchikuShoHiyoGenka_genkaUriageTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.gokeiGenka_genkaUriageTB.code,
-                },
-            ]
-        },
-        // subtable
-        {
-            fieldCode: cfgKoujiFields.nyukinJohoTB.code,
-            fieldsInSubtable: [
-                // {
-                //     fieldCode: cfgKoujiFields.ko_nyukinJohoTB.code,
-                // },
-                {
-                    fieldCode: cfgKoujiFields.bunrui_nyukinJohoTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.hidzuke_nyukinJohoTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.kingaku_nyukinJohoTB.code,
-                },
-                // {
-                //     fieldCode: cfgKoujiFields.uuid_nyukinJohoTB.code,
-                // },
-            ]
-        },
-        // subtable
-        {
-            fieldCode: cfgKoujiFields.sonohokaTB.code,
-            fieldsInSubtable: [
-                // {
-                //     fieldCode: cfgKoujiFields.ko_sonohokaTB.code,
-                // },
-                {
-                    fieldCode: cfgKoujiFields.bunrui_sonohokaTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.hidzuke_sonohokaTB.code,
-                },
-                {
-                    fieldCode: cfgKoujiFields.kingaku_sonohokaTB.code,
-                },
-            ]
-        },
-    ];
-
-    // 着工前物件
-    const chakkoZenBukkenView = [
-        {
-            fieldCode: cfgKoujiFields.kokyakumei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.tantoshaMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.sekkeiTantoshaMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.juchuKingaku.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.arari.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.genbaJusho.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.tochi.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.kaitsuke.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.keiyaku.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.ginkoMei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.sekkeiHikitsugi.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.jizenShinseiKyoka.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.puranKakutei.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.chakkoYoteiBi.code,
-        },
-        {
-            fieldCode: cfgKoujiFields.kankoYoteiBi.code,
-        },
-    ];
 
     /**
      * レコード編集画面（新規、追加）の表示イベント
@@ -458,25 +98,15 @@ jQuery.noConflict();
      */
     kintone.events.on('app.record.index.show', async function (event) {
 
-        if (![8446593, 8446605, 8446607].includes(event.viewId)) {
+        if (!editTableCfg.viewIds.includes(event.viewId)) {
             return event;
-        }
-
-        let displayFields = null;
-        if (event.viewId === 8446593) {
-            // View 進捗管理表
-            displayFields = shinchokuKanriView;
-        } else if (event.viewId === 8446605) {
-            // View 原価粗利表
-            displayFields = genkaArariView;
-        } else if (event.viewId === 8446607) {
-            // View 着工前物件
-            displayFields = chakkoZenBukkenView;
         }
 
         try {
             const formFields = await getKoujiAppFormFields();
             koujiDataPerPage = await getKoujiDataPerPage(event);
+
+            const displayFields = transformDisplayFields(event);
 
             nonEditFields = getNonEditFields(formFields);
             execNum = 0;
@@ -488,13 +118,11 @@ jQuery.noConflict();
             // データテーブルのヘッダーを作成する
             createTableHeader('table-list-viewer', formFields, displayFields);
             // データテーブル本体を作成する
-            createTableBody(displayFields);
+            createTableBody(formFields, displayFields);
             // 固定ヘッダーの幅を調整する
             updateFixedHeaderWidths();
-            // 2 番目の固定列の左位置を設定します
-            setLeftPositionFixColumn(2);
-            // 3 番目の固定列の左位置を設定します
-            setLeftPositionFixColumn(3);
+            // 固定列の左位置を設定する
+            setLeftPositionFixCols(event);
 
             // Editボタンのクリックイベント
             $('#list_viewer_area table').on('click', '.recordlist-edit-gaia', function () {
@@ -503,7 +131,7 @@ jQuery.noConflict();
 
             // Cancelボタンのクリックイベント
             $('#list_viewer_area table').on('click', '.recordlist-cancel-gaia', function () {
-                handleCancelClick().call(this);
+                handleCancelClick(formFields).call(this);
             });
 
             // Deleteボタンのクリックイベント
@@ -513,7 +141,7 @@ jQuery.noConflict();
 
             // Saveボタンのクリックイベント
             $('#list_viewer_area table').on('click', '.recordlist-save-gaia', function () {
-                handleSaveClick(displayFields).call(this);
+                handleSaveClick(displayFields, formFields).call(this);
             });
 
             // ウィンドウのサイズ変更イベント時のハンドル
@@ -526,8 +154,15 @@ jQuery.noConflict();
             $('#list_viewer_area').on('scroll', function () {
                 const scrollLeft = $(this).scrollLeft();
                 $('#table-fixedheader').css('left', `-${scrollLeft}px`);
-                setLeftPositionFixColumn(2);
-                setLeftPositionFixColumn(3);
+                // 固定列の左位置を設定する
+                setLeftPositionFixCols(event);
+            });
+
+            // レコード編集時に URL リダイレクトの場合にアラートを表示する
+            $(window).on('beforeunload', function () {
+                if (execNum === 1) {
+                    return true;
+                }
             });
 
             // イベントが下にスクロールしたときのハンドル
@@ -547,6 +182,52 @@ jQuery.noConflict();
     });
 
     /**
+     * 表示フィールドを変換する
+     * @param {Object} event
+     * @returns {Array} fixColsDisplayFields
+     */
+    function transformDisplayFields(event) {
+
+        let displayFields = null;
+        let fixColFields = null;
+
+        if (event.viewId === editTableCfg.shinchokuKanriView.viewId) {
+            // View 進捗管理表
+            displayFields = editTableCfg.shinchokuKanriView.displayFields;
+            fixColFields = editTableCfg.shinchokuKanriView.fixedColumnFields;
+        } else if (event.viewId === editTableCfg.genkaArariView.viewId) {
+            // View 原価粗利表
+            displayFields = editTableCfg.genkaArariView.displayFields;
+            fixColFields = editTableCfg.genkaArariView.fixedColumnFields;
+        } else if (event.viewId === editTableCfg.chakkoZenBukkenView.viewId) {
+            // View 着工前物件
+            displayFields = editTableCfg.chakkoZenBukkenView.displayFields;
+            fixColFields = editTableCfg.chakkoZenBukkenView.fixedColumnFields;
+        }
+
+        const fixColsDisplayFields = mergeFixColsDisplayFields(displayFields, fixColFields);
+        return fixColsDisplayFields;
+    }
+
+    /**
+     * マージ修正列表示フィールド
+     * @param {Array} displayFields
+     * @param {Array} fixColFields
+     * @returns {Array}
+     */
+    function mergeFixColsDisplayFields(displayFields, fixColFields) {
+        const fixFields = fixColFields.reduce(function (acc, obj) {
+            return acc.concat(obj.fieldCode);
+        }, []);
+
+        const tempDisplayFields = displayFields.filter(function (obj) {
+            return !fixFields.includes(obj.fieldCode);
+        });
+
+        return [...fixColFields, ...tempDisplayFields];
+    }
+
+    /**
      * 工事アプリのフォームフィールドを取得する
      * @returns {Promise}
      */
@@ -561,13 +242,30 @@ jQuery.noConflict();
      */
     async function getKoujiDataPerPage(event) {
         const koujiData = await getKoujiData();
-        koujiData.sort(function (a, b) {
-            return b[cfgKoujiFields.kouji_recordNo.code].value - a[cfgKoujiFields.kouji_recordNo.code].value;
-        });
+        // レコードIDで降順に並べ替えます
+        sortListByField(koujiData, cfgKoujiFields.kouji_recordNo.code, 'desc');
         const viewSettings = await getViewPagerSetting();
         if (viewSettings.views[event.viewName].pager && viewSettings.views[event.viewName].pager === true) {
             const perPage = getPerPageInfo();
             return koujiData.slice(perPage.from - 1, perPage.to);
+        }
+    }
+
+    /**
+     * フィールドごとにリストを並べ替える
+     * @param {Array} array
+     * @param {String} field
+     * @param {String} option
+     */
+    function sortListByField(array, field, option) {
+        if (option === 'desc') {
+            array.sort(function (a, b) {
+                return b[field].value - a[field].value;
+            });
+        } else if (option === 'asc') {
+            array.sort(function (a, b) {
+                return a[field].value - b[field].value;
+            });
         }
     }
 
@@ -668,11 +366,11 @@ jQuery.noConflict();
             if (formFieldsProp[key].type === 'SUBTABLE') {
                 const subTableFields = formFieldsProp[key].fields;
                 for (const keyField in subTableFields) {
-                    if (subTableFields[keyField].type === 'CALC') {
+                    if (subTableFields[keyField].hasOwnProperty('expression') && subTableFields[keyField].expression) {
                         calFields.push(keyField);
                     }
                 }
-            } else if (formFieldsProp[key].type === 'CALC') {
+            } else if (formFieldsProp[key].hasOwnProperty('expression') && formFieldsProp[key].expression) {
                 calFields.push(key);
             }
         }
@@ -752,8 +450,8 @@ jQuery.noConflict();
     function getHeaderList(formFields, displayFields) {
         const headers = [];
         displayFields.forEach(function (obj) {
-            if (obj.hasOwnProperty('fieldsInSubtable')) {
-                obj['fieldsInSubtable'].forEach(function (item) {
+            if (obj.hasOwnProperty('subtableDisplayFields')) {
+                obj['subtableDisplayFields'].forEach(function (item) {
                     headers.push({
                         'code': formFields.properties[obj.fieldCode].fields[item.fieldCode].label,
                         'minWidth': '100px'
@@ -771,13 +469,13 @@ jQuery.noConflict();
 
     /**
      * テーブル本体を作成する
+     * @param {Object} formFields
      * @param {Object} displayFields
-     * @param {Array} koujiData
      */
-    function createTableBody(displayFields) {
+    function createTableBody(formFields, displayFields) {
         const tableBody = $('#list_viewer_area table#table-list-viewer').find('tbody');
         koujiDataPerPage.forEach(function (record, indexRecord) {
-            const maxRowSpan = getMaxRowSpan(record, displayFields);
+            const maxRowSpan = getMaxRowOfRecord(record, displayFields);
             for (let i = 1; i <= maxRowSpan; i++) {
                 // レコードごとに行を作成する
                 const tableRow = $(`<tr class="recordlist-row-gaia record-${indexRecord % 2 === 0 ? 'even' : 'odd'}">`).appendTo(tableBody);
@@ -785,10 +483,10 @@ jQuery.noConflict();
                     createCellLink(tableRow, record, maxRowSpan);
                 }
                 for (const field of displayFields) {
-                    if (field.hasOwnProperty('fieldsInSubtable')) {
-                        createCellSubtable(tableRow, record, field, i, maxRowSpan);
+                    if (field.hasOwnProperty('subtableDisplayFields')) {
+                        createCellSubtable(tableRow, record, field, i, maxRowSpan, formFields);
                     } else {
-                        createCellNormalField(tableRow, record, field, i, maxRowSpan);
+                        createCellNormalField(tableRow, record, field, i, maxRowSpan, formFields);
                     }
                 }
                 if (i === 1) {
@@ -799,19 +497,20 @@ jQuery.noConflict();
     }
 
     /**
-     * 最大行スパンを取得する
+     * レコードの最大行を取得する
      * @param {Object} record
      * @param {Object} displayFields
-     * @returns {Number} maxRowSpan
+     * @returns {Number} maxRowOfRecord
      */
-    function getMaxRowSpan(record, displayFields) {
-        let maxRowSpan = 1;
+    function getMaxRowOfRecord(record, displayFields) {
+        let maxRowOfRecord = 1;
         for (const field of displayFields) {
-            if (Array.isArray(record[field.fieldCode].value) && record[field.fieldCode].value.length > maxRowSpan) {
-                maxRowSpan = record[field.fieldCode].value.length;
+            const recordFieldCode = record[field.fieldCode];
+            if (Array.isArray(recordFieldCode.value) && recordFieldCode.type === "SUBTABLE" & recordFieldCode.value.length > maxRowOfRecord) {
+                maxRowOfRecord = record[field.fieldCode].value.length;
             }
         }
-        return maxRowSpan;
+        return maxRowOfRecord;
     }
 
     /**
@@ -835,23 +534,26 @@ jQuery.noConflict();
      * @param {Object} field
      * @param {Number} i
      * @param {Number} maxRowSpan
+     * @param {Object} formFields
      */
-    function createCellSubtable(tableRow, record, field, i, maxRowSpan) {
-        field['fieldsInSubtable'].forEach(function (item) {
+    function createCellSubtable(tableRow, record, field, i, maxRowSpan, formFields) {
+        field['subtableDisplayFields'].forEach(function (item) {
             if (record[field.fieldCode].value.length > 0) {
                 const blankRows = maxRowSpan - record[field.fieldCode].value.length;
                 // サブテーブルは要素の配列です
                 record[field.fieldCode].value.forEach(function (subItem, index) {
                     if (index + 1 === i) {
+                        const unitField = getUnitField(formFields, item.fieldCode, field.fieldCode);
                         const tableData = $(`<td subtable=${field.fieldCode} class="recordlist-cell-gaia">`).appendTo(tableRow);
                         const divEle = $(`<div fieldcode=${item.fieldCode}>`).appendTo(tableData);
-                        const spanEle = $(`<span>`).text(subItem.value[item.fieldCode].value).appendTo(divEle);
+                        const fieldType = formFields.properties[field.fieldCode].fields[item.fieldCode].type;
+                        createSpanElement(fieldType, unitField, subItem.value[item.fieldCode].value, divEle);
                     }
                 });
 
                 for (let j = 1; j <= blankRows; j++) {
                     if (blankRows > 0 && record[field.fieldCode].value.length + j === i) {
-                        const tableData = $(`<td subtable=${field.fieldCode} class="recordlist-cell-gaia">`).appendTo(tableRow);
+                        const tableData = $(`<td subtable=${field.fieldCode} class="recordlist-cell-gaia empty-cell">`).appendTo(tableRow);
                         const divEle = $(`<div fieldcode=${item.fieldCode}>`).appendTo(tableData);
                         const spanEle = $(`<span>`).appendTo(divEle);
                     }
@@ -872,12 +574,53 @@ jQuery.noConflict();
      * @param {Object} field
      * @param {Number} i
      * @param {Number} maxRowSpan
+     * @param {Object} formFields
      */
-    function createCellNormalField(tableRow, record, field, i, maxRowSpan) {
+    function createCellNormalField(tableRow, record, field, i, maxRowSpan, formFields) {
         if (i === 1) {
+            const unitField = getUnitField(formFields, field.fieldCode);
             const tableData = $(`<td class="recordlist-cell-gaia" rowspan="${maxRowSpan}">`).appendTo(tableRow);
             const divEle = $(`<div fieldcode=${field.fieldCode}>`).appendTo(tableData);
-            const spanEle = $(`<span>`).text(record[field.fieldCode].value).appendTo(divEle);
+            const fieldType = formFields.properties[field.fieldCode].type;
+            createSpanElement(fieldType, unitField, record[field.fieldCode].value, divEle);
+        }
+    }
+
+    /**
+     * フィールドの単位を取得する
+     * @param {Object} formFields
+     * @param {String} itemFieldCode
+     * @param {String} subtableFieldCode
+     * @returns {String} unitField
+     */
+    function getUnitField(formFields, itemFieldCode, subtableFieldCode = null) {
+        const formFieldsPro = formFields.properties;
+        let unitField = null;
+        if (subtableFieldCode && formFieldsPro[subtableFieldCode].fields[itemFieldCode].hasOwnProperty('unit') && formFieldsPro[subtableFieldCode].fields[itemFieldCode].unit) {
+            unitField = formFieldsPro[subtableFieldCode].fields[itemFieldCode].unit;
+        } else if (!subtableFieldCode && formFieldsPro[itemFieldCode].hasOwnProperty('unit') && formFieldsPro[itemFieldCode].unit) {
+            unitField = formFieldsPro[itemFieldCode].unit;
+        }
+        return unitField;
+    }
+
+    /**
+     * スパン要素を作成する
+     * @param {String} fieldType
+     * @param {String} unitField
+     * @param {string} fieldValue
+     * @param {Object} divEle
+     */
+    function createSpanElement(fieldType, unitField, fieldValue, divEle) {
+        if (fieldType === 'NUMBER' || fieldType === 'CALC') {
+            divEle.addClass('cell-number');
+            if (unitField) {
+                $(`<span>`).text(Number(fieldValue).toLocaleString('en-US') + unitField).appendTo(divEle);
+            } else {
+                $(`<span>`).text(Number(fieldValue).toLocaleString('en-US')).appendTo(divEle);
+            }
+        } else {
+            $(`<span>`).text(fieldValue).appendTo(divEle);
         }
     }
 
@@ -913,6 +656,29 @@ jQuery.noConflict();
     }
 
     /**
+     * 固定列の左位置を設定する
+     * @param {Object} event
+     */
+    function setLeftPositionFixCols(event) {
+        let fixColFields = null;
+
+        if (event.viewId === editTableCfg.shinchokuKanriView.viewId) {
+            // View 進捗管理表
+            fixColFields = editTableCfg.shinchokuKanriView.fixedColumnFields;
+        } else if (event.viewId === editTableCfg.genkaArariView.viewId) {
+            // View 原価粗利表
+            fixColFields = editTableCfg.genkaArariView.fixedColumnFields;
+        } else if (event.viewId === editTableCfg.chakkoZenBukkenView.viewId) {
+            // View 着工前物件
+            fixColFields = editTableCfg.chakkoZenBukkenView.fixedColumnFields;
+        }
+
+        for (let i = 0; i < fixColFields.length; i++) {
+            setLeftPositionFixColumn(i + 2);
+        }
+    }
+
+    /**
      * 固定列の左位置を設定します
      * @param {Number} columnIndex
      */
@@ -928,14 +694,19 @@ jQuery.noConflict();
         const prevColBorderLeftWidth = parseFloat(prevColElement.css('border-left-width'));
         const prevColBorderRightWidth = parseFloat(prevColElement.css('border-right-width'));
         const newLeftValue = prevColLeft + prevColWidth + prevColPaddingLeft + prevColPaddingRight + prevColBorderLeftWidth + prevColBorderRightWidth;
-        const targetDataCells = $(`td:nth-child(${columnIndex})`);
+        const targetDataCells = $(`td:nth-child(${columnIndex}):not([subtable])`);
         const targetHeaderCells = $(`th:nth-child(${columnIndex})`);
         targetDataCells.each(function() {
             $(this).css('left', `${newLeftValue}px`);
+            $(this).css('position', 'sticky');
+            $(this).css('z-index', '1');
         });
 
         targetHeaderCells.each(function() {
             $(this).css('left', `${newLeftValue}px`);
+            $(this).css('position', 'sticky');
+            $(this).css('background-color', '#ffffff');
+            $(this).css('z-index', '1');
         });
     }
 
@@ -956,10 +727,13 @@ jQuery.noConflict();
             const rowspan = $row.find('td:first-child').attr('rowspan');
             const recordUrl = $row.find('td:first-child a').attr('href');
             const recordId = recordUrl.split("=")[1];
-            const records = koujiDataPerPage.filter(function (item) {
-                return item[cfgKoujiFields.kouji_recordNo.code].value === recordId;
-            });
-            const record = records[0];
+            let record = null;
+            for (const item of koujiDataPerPage) {
+                if (item[cfgKoujiFields.kouji_recordNo.code].value === recordId) {
+                    record = item;
+                    break;
+                }
+            }
             // 最初の行のハンドル
             $row.find('td:not(:first-child):not(:last-child)').each(function () {
                 const text = $(this).text();
@@ -1024,8 +798,9 @@ jQuery.noConflict();
 
     /**
      * ハンドルキャンセルクリック
+     * @param {Object} formFields
      */
-    function handleCancelClick() {
+    function handleCancelClick(formFields) {
         return async function () {
             execNum--;
             if (execNum < 0) {
@@ -1048,10 +823,14 @@ jQuery.noConflict();
                     const itemFieldCode = divEle.attr('fieldcode');
                     if (!nonEditFields.includes(itemFieldCode)) {
                         if (!subtableFieldCode) {
-                            $('<span>').text(record[itemFieldCode].value).appendTo(divEle);
+                            const unitField = getUnitField(formFields, itemFieldCode);
+                            const fieldType = formFields.properties[itemFieldCode].type;
+                            createSpanElement(fieldType, unitField, record[itemFieldCode].value, divEle);
                         } else {
                             if (record[subtableFieldCode].value[0]) {
-                                $('<span>').text(record[subtableFieldCode].value[0].value[itemFieldCode].value).appendTo(divEle);
+                                const unitField = getUnitField(formFields, itemFieldCode, subtableFieldCode);
+                                const fieldType = formFields.properties[subtableFieldCode].fields[itemFieldCode].type;
+                                createSpanElement(fieldType, unitField, record[subtableFieldCode].value[0].value[itemFieldCode].value, divEle);
                             }
                         }
                     }
@@ -1069,7 +848,9 @@ jQuery.noConflict();
                         const relativeIndex = currentRowIndex - rowIndex;
                         if (!nonEditFields.includes(itemFieldCode)) {
                             if (record[subtableFieldCode].value[relativeIndex]) {
-                                $('<span>').text(record[subtableFieldCode].value[relativeIndex].value[itemFieldCode].value).appendTo(divEle);
+                                const unitField = getUnitField(formFields, itemFieldCode, subtableFieldCode);
+                                const fieldType = formFields.properties[subtableFieldCode].fields[itemFieldCode].type;
+                                createSpanElement(fieldType, unitField, record[subtableFieldCode].value[relativeIndex].value[itemFieldCode].value, divEle);
                             }
                         }
                     });
@@ -1156,7 +937,7 @@ jQuery.noConflict();
                         $row.nextAll(`:lt(${rowspan - 1})`).remove();
                     }
                     $row.remove();
-
+                    showRefreshConfirmDialog();
                 } catch (error) {
                     showErrorMessage(error);
                 }
@@ -1164,12 +945,34 @@ jQuery.noConflict();
         }
     }
 
+    /**
+     * 更新確認ダイアログを表示
+     */
+    function showRefreshConfirmDialog() {
+        Swal.fire({
+            title: '正常に削除されました',
+            text: 'ページごとの情報を更新するために更新しますか?',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload();
+            } else {
+              Swal.close();
+            }
+        });
+    }
 
     /**
      * 保存クリックをハンドルします
      * @param {Object} displayFields
+     * @param {Object} formFields
      */
-    function handleSaveClick(displayFields) {
+    function handleSaveClick(displayFields, formFields) {
         return async function () {
             execNum--;
             if (execNum < 0) {
@@ -1178,10 +981,13 @@ jQuery.noConflict();
             }
             const recordUrl = $(this).closest('tr').find('td:first-child a').attr('href');
             const recordId = recordUrl.split("=")[1];
-            const oldRecords = koujiDataPerPage.filter(function (item) {
-                return item[cfgKoujiFields.kouji_recordNo.code].value === recordId;
-            });
-            const oldRecord = oldRecords[0];
+            let oldRecord = null;
+            for (const item of koujiDataPerPage) {
+                if (item[cfgKoujiFields.kouji_recordNo.code].value === recordId) {
+                    oldRecord = item;
+                    break;
+                }
+            }
             const $row = $(this).closest('tr');
             const rowspan = $row.find('td:first-child').attr('rowspan');
             const originalContentObj = initOriginalContent(displayFields, rowspan, oldRecord);
@@ -1239,10 +1045,14 @@ jQuery.noConflict();
                     const divEle = $(this).find('div');
                     const itemFieldCode = divEle.attr('fieldcode');
                     if (!subtableFieldCode) {
-                        $('<span>').text(record[itemFieldCode].value).appendTo(divEle);
+                        const unitField = getUnitField(formFields, itemFieldCode);
+                        const fieldType = formFields.properties[itemFieldCode].type;
+                        createSpanElement(fieldType, unitField, record[itemFieldCode].value, divEle);
                     } else {
                         if (record[subtableFieldCode].value[0]) {
-                            $('<span>').text(record[subtableFieldCode].value[0].value[itemFieldCode].value).appendTo(divEle);
+                            const unitField = getUnitField(formFields, itemFieldCode, subtableFieldCode);
+                            const fieldType = formFields.properties[subtableFieldCode].fields[itemFieldCode].type;
+                            createSpanElement(fieldType, unitField, record[subtableFieldCode].value[0].value[itemFieldCode].value, divEle);
                         }
                     }
                 });
@@ -1259,7 +1069,9 @@ jQuery.noConflict();
                         const currentRowIndex = $(this).closest('tr').index();
                         const relativeIndex = currentRowIndex - rowIndex;
                         if (record[subtableFieldCode].value[relativeIndex]) {
-                            $('<span>').text(record[subtableFieldCode].value[relativeIndex].value[itemFieldCode].value).appendTo(divEle);
+                            const unitField = getUnitField(formFields, itemFieldCode, subtableFieldCode);
+                            const fieldType = formFields.properties[subtableFieldCode].fields[itemFieldCode].type;
+                            createSpanElement(fieldType, unitField, record[subtableFieldCode].value[relativeIndex].value[itemFieldCode].value, divEle);
                         }
                     });
                 }
@@ -1290,35 +1102,39 @@ jQuery.noConflict();
         if (subtableFieldCode) {
             if (record[subtableFieldCode] && record[subtableFieldCode].value[index]) {
                 const fieldType = formFields.properties[subtableFieldCode].fields[itemFieldCode].type;
-                if (fieldType === "DATE") {
-                    const inputEle = $(`<input type="date">`).appendTo(divEle);
-                    inputEle.val(fieldValue);
-                } else if (fieldType === "DROP_DOWN") {
-                    const options = Object.keys(formFields.properties[subtableFieldCode].fields[itemFieldCode].options);
-                    const selectEle = $('<select>').appendTo(divEle);
-                    $('<option value="">').text('').appendTo(selectEle);
-                    options.forEach(function (option) {
-                        if (option === fieldValue) {
-                            $(`<option selected value=${option}>`).text(option).appendTo(selectEle);
-                        } else {
-                            $(`<option value=${option}>`).text(option).appendTo(selectEle);
-                        }
-                    });
-                } else if (fieldType === "NUMBER") {
-                    const inputEle = $(`<input type="number" class="recordlist-forms-number-gaia">`).appendTo(divEle);
-                    inputEle.val(fieldValue);
-                } else {
-                    const inputEle = $(`<input type="text" class="recordlist-forms-text-gaia">`).appendTo(divEle);
-                    inputEle.val(fieldValue);
-                }
+                const unitField = getUnitField(formFields, itemFieldCode, subtableFieldCode);
+                createFormElement(formFields, fieldType, fieldValue, divEle, unitField, itemFieldCode, subtableFieldCode);
             }
         } else {
             const fieldType = formFields.properties[itemFieldCode].type;
-            if (fieldType === "DATE") {
-                const inputEle = $(`<input type="date">`).appendTo(divEle);
-                inputEle.val(fieldValue);
-            } else if (fieldType === "DROP_DOWN") {
-                const options = Object.keys(formFields.properties[itemFieldCode].options);
+            const unitField = getUnitField(formFields, itemFieldCode);
+            createFormElement(formFields, fieldType, fieldValue, divEle, unitField, itemFieldCode);
+        }
+    }
+
+    /**
+     * フォーム要素を作成する
+     * @param {Object} formFields
+     * @param {String} fieldType
+     * @param {String} fieldValue
+     * @param {Object} divEle
+     * @param {String} unitField
+     * @param {String} itemFieldCode
+     * @param {String} subtableFieldCode
+     */
+    function createFormElement(formFields, fieldType, fieldValue, divEle, unitField, itemFieldCode, subtableFieldCode = null) {
+        switch (fieldType) {
+            case "DATE":
+                const inputEleDate = $(`<input type="date">`).appendTo(divEle);
+                inputEleDate.val(fieldValue);
+                break;
+            case "DROP_DOWN":
+                let options = null;
+                if (subtableFieldCode) {
+                    options = Object.keys(formFields.properties[subtableFieldCode].fields[itemFieldCode].options);
+                } else {
+                    options = Object.keys(formFields.properties[itemFieldCode].options);
+                }
                 const selectEle = $('<select>').appendTo(divEle);
                 $('<option value="">').text('').appendTo(selectEle);
                 options.forEach(function (option) {
@@ -1328,13 +1144,18 @@ jQuery.noConflict();
                         $(`<option value=${option}>`).text(option).appendTo(selectEle);
                     }
                 });
-            } else if (fieldType === "NUMBER") {
-                const inputEle = $(`<input type="number" class="recordlist-forms-number-gaia">`).appendTo(divEle);
-                inputEle.val(fieldValue);
-            } else {
-                const inputEle = $(`<input type="text" class="recordlist-forms-text-gaia">`).appendTo(divEle);
-                inputEle.val(fieldValue);
-            }
+                break;
+            case "NUMBER":
+                const inputEleNumber = $(`<input type="number" class="recordlist-forms-number-gaia">`).appendTo(divEle);
+                if (unitField) {
+                    inputEleNumber.val(Number(fieldValue.replace(unitField,'').replace(/,/g, '')));
+                } else {
+                    inputEleNumber.val(Number(fieldValue.replace(/,/g, '')));
+                }
+                break;
+            default:
+                const inputEleDefault = $(`<input type="text" class="recordlist-forms-text-gaia">`).appendTo(divEle);
+                inputEleDefault.val(fieldValue);
         }
     }
 
@@ -1357,16 +1178,18 @@ jQuery.noConflict();
     function initOriginalContent(displayFields, rowspan, oldRecord) {
         const originalContents = {};
         for (const field of displayFields) {
-            if (field.hasOwnProperty('fieldsInSubtable')) {
+            if (field.hasOwnProperty('subtableDisplayFields')) {
                 const tempArray = [];
                 for (let i = 0; i < rowspan; i++) {
                     if (i >= oldRecord[field.fieldCode].value.length) {
                         break;
                     }
                     const tempObject = {};
-                    field.fieldsInSubtable.forEach(function (item) {
-                        if (!nonEditFields.includes(item.fieldCode)) {
-                            tempObject[item.fieldCode] = { value: '' };
+                    oldRecord[field.fieldCode].value.forEach(function (obj, index) {
+                        for (const key in obj.value) {
+                            if (index === i) {
+                                tempObject[key] = { 'value': obj.value[key].value }
+                            }
                         }
                     });
                     tempArray.push({ value: tempObject });
@@ -1374,7 +1197,7 @@ jQuery.noConflict();
                 originalContents[field.fieldCode] = { value: tempArray };
             } else {
                 if (!nonEditFields.includes(field.fieldCode)) {
-                    originalContents[field.fieldCode] = { value: '' };
+                    originalContents[field.fieldCode] = { value: oldRecord[field.fieldCode].value };
                 }
             }
         }
@@ -1405,4 +1228,4 @@ jQuery.noConflict();
         return sncLib.kintone.rest.getRecord(cfgKouji.app, query);
     }
 
-})(jQuery, window.nokConfig, window.snc);
+})(jQuery, window.nokConfig, window.snc, window.editFieldsTableConfig);

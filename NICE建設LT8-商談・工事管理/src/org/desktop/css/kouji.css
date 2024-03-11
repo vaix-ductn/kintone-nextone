@@ -36,34 +36,10 @@
     z-index: 1;
 }
 
-#list_viewer_area table thead > th:nth-child(2) {
-    position: sticky;
-    left: 50px;
-    background-color: #ffffff;
-    z-index: 1;
-}
-
-#list_viewer_area table thead > th:nth-child(3) {
-    position: sticky;
-    left: 151px;
-    background-color: #ffffff;
-    z-index: 1;
-}
-
 
 #list_viewer_area table tbody tr > td:first-child:not([subtable]) {
     position: sticky;
     left: 0;
-}
-
-#list_viewer_area table tbody tr > td:nth-child(2):not([subtable]) {
-    position: sticky;
-    left: 50px;
-}
-
-#list_viewer_area table tbody tr > td:nth-child(3):not([subtable]) {
-    position: sticky;
-    left: 151px;
 }
 
 #list_viewer_area table select {
@@ -109,6 +85,14 @@
 
 #list_viewer_area table tbody tr.record-even td {
     background-color: #f5f5f5;
+}
+
+#list_viewer_area table tbody tr td .cell-number {
+    text-align: right;
+}
+
+#list_viewer_area table tbody tr td.empty-cell {
+    background-color: #e3e7e8 !important;
 }
 
 
