@@ -12,6 +12,7 @@
  *
  * [CSS]
  * 51-us-default.css
+ * kouji.css
  *
  * @author SNC
  * @version 3.5.0
