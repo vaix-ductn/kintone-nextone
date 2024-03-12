@@ -8,6 +8,7 @@
  * snc.kintone.min.js v1.0.8
  * snc.nok.min.js v1.0.5
  * config.Nice-ricoh-kintone-plus-kensetuLT-3.5.1.js
+ * config.kouji.js v1.0.0
  *
  * [CSS]
  * 51-us-default.css
@@ -17,7 +18,7 @@
  * @customer （2023-06-25）
 */
 jQuery.noConflict();
-(function ($, config, sncLib, editTableCfg) {
+(function ($, config, sncLib, koujiViewCfg) {
     'use strict';
     const cfgKouji = config.kouji;
     const cfgKoujiFields = config.kouji.fields;
@@ -98,7 +99,7 @@ jQuery.noConflict();
      */
     kintone.events.on('app.record.index.show', async function (event) {
 
-        if (!editTableCfg.viewIds.includes(event.viewId)) {
+        if (!koujiViewCfg.viewIds.includes(event.viewId)) {
             return event;
         }
 
@@ -191,18 +192,18 @@ jQuery.noConflict();
         let displayFields = null;
         let fixColFields = null;
 
-        if (event.viewId === editTableCfg.shinchokuKanriView.viewId) {
+        if (event.viewId === koujiViewCfg.shinchokuKanriView.viewId) {
             // View 進捗管理表
-            displayFields = editTableCfg.shinchokuKanriView.displayFields;
-            fixColFields = editTableCfg.shinchokuKanriView.fixedColumnFields;
-        } else if (event.viewId === editTableCfg.genkaArariView.viewId) {
+            displayFields = koujiViewCfg.shinchokuKanriView.displayFields;
+            fixColFields = koujiViewCfg.shinchokuKanriView.fixedColumnFields;
+        } else if (event.viewId === koujiViewCfg.genkaArariView.viewId) {
             // View 原価粗利表
-            displayFields = editTableCfg.genkaArariView.displayFields;
-            fixColFields = editTableCfg.genkaArariView.fixedColumnFields;
-        } else if (event.viewId === editTableCfg.chakkoZenBukkenView.viewId) {
+            displayFields = koujiViewCfg.genkaArariView.displayFields;
+            fixColFields = koujiViewCfg.genkaArariView.fixedColumnFields;
+        } else if (event.viewId === koujiViewCfg.chakkoZenBukkenView.viewId) {
             // View 着工前物件
-            displayFields = editTableCfg.chakkoZenBukkenView.displayFields;
-            fixColFields = editTableCfg.chakkoZenBukkenView.fixedColumnFields;
+            displayFields = koujiViewCfg.chakkoZenBukkenView.displayFields;
+            fixColFields = koujiViewCfg.chakkoZenBukkenView.fixedColumnFields;
         }
 
         const fixColsDisplayFields = mergeFixColsDisplayFields(displayFields, fixColFields);
@@ -258,15 +259,9 @@ jQuery.noConflict();
      * @param {String} option
      */
     function sortListByField(array, field, option) {
-        if (option === 'desc') {
-            array.sort(function (a, b) {
-                return b[field].value - a[field].value;
-            });
-        } else if (option === 'asc') {
-            array.sort(function (a, b) {
-                return a[field].value - b[field].value;
-            });
-        }
+        array.sort(function (a, b) {
+            return option === 'desc' ? b[field].value - a[field].value : a[field].value - b[field].value;
+        });
     }
 
     /**
@@ -662,15 +657,15 @@ jQuery.noConflict();
     function setLeftPositionFixCols(event) {
         let fixColFields = null;
 
-        if (event.viewId === editTableCfg.shinchokuKanriView.viewId) {
+        if (event.viewId === koujiViewCfg.shinchokuKanriView.viewId) {
             // View 進捗管理表
-            fixColFields = editTableCfg.shinchokuKanriView.fixedColumnFields;
-        } else if (event.viewId === editTableCfg.genkaArariView.viewId) {
+            fixColFields = koujiViewCfg.shinchokuKanriView.fixedColumnFields;
+        } else if (event.viewId === koujiViewCfg.genkaArariView.viewId) {
             // View 原価粗利表
-            fixColFields = editTableCfg.genkaArariView.fixedColumnFields;
-        } else if (event.viewId === editTableCfg.chakkoZenBukkenView.viewId) {
+            fixColFields = koujiViewCfg.genkaArariView.fixedColumnFields;
+        } else if (event.viewId === koujiViewCfg.chakkoZenBukkenView.viewId) {
             // View 着工前物件
-            fixColFields = editTableCfg.chakkoZenBukkenView.fixedColumnFields;
+            fixColFields = koujiViewCfg.chakkoZenBukkenView.fixedColumnFields;
         }
 
         for (let i = 0; i < fixColFields.length; i++) {
@@ -937,34 +932,11 @@ jQuery.noConflict();
                         $row.nextAll(`:lt(${rowspan - 1})`).remove();
                     }
                     $row.remove();
-                    showRefreshConfirmDialog();
                 } catch (error) {
                     showErrorMessage(error);
                 }
             });
         }
-    }
-
-    /**
-     * 更新確認ダイアログを表示
-     */
-    function showRefreshConfirmDialog() {
-        Swal.fire({
-            title: '正常に削除されました',
-            text: 'ページごとの情報を更新するために更新しますか?',
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.reload();
-            } else {
-              Swal.close();
-            }
-        });
     }
 
     /**
@@ -1124,11 +1096,11 @@ jQuery.noConflict();
      */
     function createFormElement(formFields, fieldType, fieldValue, divEle, unitField, itemFieldCode, subtableFieldCode = null) {
         switch (fieldType) {
-            case "DATE":
+            case 'DATE':
                 const inputEleDate = $(`<input type="date">`).appendTo(divEle);
                 inputEleDate.val(fieldValue);
                 break;
-            case "DROP_DOWN":
+            case 'DROP_DOWN':
                 let options = null;
                 if (subtableFieldCode) {
                     options = Object.keys(formFields.properties[subtableFieldCode].fields[itemFieldCode].options);
@@ -1145,7 +1117,7 @@ jQuery.noConflict();
                     }
                 });
                 break;
-            case "NUMBER":
+            case 'NUMBER':
                 const inputEleNumber = $(`<input type="number" class="recordlist-forms-number-gaia">`).appendTo(divEle);
                 if (unitField) {
                     inputEleNumber.val(Number(fieldValue.replace(unitField,'').replace(/,/g, '')));
@@ -1228,4 +1200,4 @@ jQuery.noConflict();
         return sncLib.kintone.rest.getRecord(cfgKouji.app, query);
     }
 
-})(jQuery, window.nokConfig, window.snc, window.editFieldsTableConfig);
+})(jQuery, window.nokConfig, window.snc, window.koujiCustomViewConfig);

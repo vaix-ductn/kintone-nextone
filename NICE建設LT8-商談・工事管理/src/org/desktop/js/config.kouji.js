@@ -9,7 +9,7 @@
     const cfgKoujiFields = config.kouji.fields;
 
     // グローバル変数
-    window.editFieldsTableConfig = window.editFieldsTableConfig || {
+    window.koujiCustomViewConfig = window.koujiCustomViewConfig || {
         // 進捗管理表: viewId 8446593
         // 原価粗利表: viewId 8446605
         // 着工前物件: viewId 8446607
