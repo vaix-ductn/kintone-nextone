@@ -1053,12 +1053,13 @@ jQuery.noConflict();
                         }
                     });
                 }
+                // 保存キャンセルボタンを編集削除ボタンに切り替えます
+                toggleSaveCancelToEditDelete($row);
             } catch (error) {
                 showErrorMessage(error);
+                execNum++;
             }
 
-            // 保存キャンセルボタンを編集削除ボタンに切り替えます
-            toggleSaveCancelToEditDelete($row);
             // 固定ヘッダーの幅を調整する
             updateFixedHeaderWidths();
             // 右にスクロールし続ける
