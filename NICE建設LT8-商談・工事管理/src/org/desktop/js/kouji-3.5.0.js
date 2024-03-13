@@ -146,6 +146,11 @@ jQuery.noConflict();
                 handleSaveClick(displayFields, formFields).call(this);
             });
 
+            // テーブルをスクロールするときに、入力要素のフォーカスを削除します
+            $('#list_viewer_area').on('scroll', function () {
+                $('input').blur();
+            });
+
             // ウィンドウのサイズ変更イベント時のハンドル
             $(window).on('resize', function () {
                 // 固定ヘッダーの幅を調整する
@@ -608,7 +613,7 @@ jQuery.noConflict();
      * @param {Object} divEle
      */
     function createSpanElement(fieldType, unitField, fieldValue, divEle) {
-        if (fieldType === 'NUMBER' || fieldType === 'CALC') {
+        if (fieldValue && fieldType === 'NUMBER' || fieldType === 'CALC') {
             divEle.addClass('cell-number');
             if (unitField) {
                 $(`<span>`).text(Number(fieldValue).toLocaleString('en-US') + unitField).appendTo(divEle);
@@ -1120,10 +1125,14 @@ jQuery.noConflict();
                 break;
             case 'NUMBER':
                 const inputEleNumber = $(`<input type="number" class="recordlist-forms-number-gaia">`).appendTo(divEle);
-                if (unitField) {
-                    inputEleNumber.val(Number(fieldValue.replace(unitField,'').replace(/,/g, '')));
+                if (fieldValue) {
+                    if (unitField) {
+                        inputEleNumber.val(Number(fieldValue.replace(unitField,'').replace(/,/g, '')));
+                    } else {
+                        inputEleNumber.val(Number(fieldValue.replace(/,/g, '')));
+                    }
                 } else {
-                    inputEleNumber.val(Number(fieldValue.replace(/,/g, '')));
+                    inputEleNumber.val(fieldValue);
                 }
                 break;
             default:
