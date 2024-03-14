@@ -19,7 +19,7 @@
         shinchokuKanriView: {
 
             viewId: 8446593,
-
+            // 通常のフィールドを固定列 (サブテーブル フィールドではない) に設定する
             fixedColumnFields: [
                 {
                     fieldCode: cfgKoujiFields.koujiId.code,
@@ -217,7 +217,7 @@
         genkaArariView: {
 
             viewId: 8446605,
-
+            // 通常のフィールドを固定列 (サブテーブル フィールドではない) に設定する
             fixedColumnFields: [
                 {
                     fieldCode: cfgKoujiFields.kouji_recordNo.code,
@@ -370,7 +370,7 @@
         chakkoZenBukkenView: {
 
             viewId: 8446607,
-
+            // 通常のフィールドを固定列 (サブテーブル フィールドではない) に設定する
             fixedColumnFields: [
                 {
                     fieldCode: cfgKoujiFields.kokyakumei.code,

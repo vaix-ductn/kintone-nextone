@@ -110,6 +110,10 @@ jQuery.noConflict();
 
             const displayFields = transformDisplayFields(event);
 
+            if (displayFields.length === 0) {
+                return event;
+            }
+
             nonEditFields = getNonEditFields(formFields);
             execNum = 0;
 
@@ -716,7 +720,7 @@ jQuery.noConflict();
      * @param {Object} formFields
      */
     function handleEditClick(formFields) {
-        return function () {
+        return async function () {
             execNum++;
             if (execNum > 1) {
                 execNum--;
@@ -728,12 +732,14 @@ jQuery.noConflict();
             const rowspan = $row.find('td:first-child').attr('rowspan');
             const recordUrl = $row.find('td:first-child a').attr('href');
             const recordId = recordUrl.split("=")[1];
-            let record = null;
-            for (const item of koujiDataPerPage) {
-                if (item[cfgKoujiFields.kouji_recordNo.code].value === recordId) {
-                    record = item;
-                    break;
-                }
+            const records = await getKoujiRecord(recordId);
+            const record = records[0];
+
+            if (!record) {
+                showErrorMessage(` Error occurred.
+                The specified record (ID: ${recordId}) is not found.`);
+                execNum--;
+                return;
             }
             // 最初の行のハンドル
             $row.find('td:not(:first-child):not(:last-child)').each(function () {
@@ -815,6 +821,14 @@ jQuery.noConflict();
             try {
                 const records = await getKoujiRecord(recordId);
                 const record = records[0];
+
+                if (!record) {
+                    showErrorMessage(` Error occurred.
+                    The specified record (ID: ${recordId}) is not found.`);
+                    execNum++;
+                    return;
+                }
+
                 // 最初の行のハンドル
                 $row.find('td:not(:first-child):not(:last-child)').each(function () {
                     $(this).find('input').remove();
@@ -940,6 +954,7 @@ jQuery.noConflict();
                     $row.remove();
                 } catch (error) {
                     showErrorMessage(error);
+                    confirmBox.remove();
                 }
             });
         }
@@ -959,13 +974,16 @@ jQuery.noConflict();
             }
             const recordUrl = $(this).closest('tr').find('td:first-child a').attr('href');
             const recordId = recordUrl.split("=")[1];
-            let oldRecord = null;
-            for (const item of koujiDataPerPage) {
-                if (item[cfgKoujiFields.kouji_recordNo.code].value === recordId) {
-                    oldRecord = item;
-                    break;
-                }
+            const oldRecords = await getKoujiRecord(recordId);
+            const oldRecord = oldRecords[0];
+
+            if (!oldRecord) {
+                showErrorMessage(` Error occurred.
+                The specified record (ID: ${recordId}) is not found.`);
+                execNum++;
+                return;
             }
+
             const $row = $(this).closest('tr');
             const rowspan = $row.find('td:first-child').attr('rowspan');
             const originalContentObj = initOriginalContent(displayFields, rowspan, oldRecord);
@@ -1053,12 +1071,13 @@ jQuery.noConflict();
                         }
                     });
                 }
+                // 保存キャンセルボタンを編集削除ボタンに切り替えます
+                toggleSaveCancelToEditDelete($row);
             } catch (error) {
                 showErrorMessage(error);
+                execNum++;
             }
 
-            // 保存キャンセルボタンを編集削除ボタンに切り替えます
-            toggleSaveCancelToEditDelete($row);
             // 固定ヘッダーの幅を調整する
             updateFixedHeaderWidths();
             // 右にスクロールし続ける
@@ -1196,7 +1215,7 @@ jQuery.noConflict();
         console.log(error);
         Swal.fire({
             icon: 'error',
-            title: error.message
+            title: error.message ? error.message : error
         });
     }
 
