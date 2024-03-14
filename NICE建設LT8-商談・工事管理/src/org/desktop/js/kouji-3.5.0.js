@@ -716,7 +716,7 @@ jQuery.noConflict();
      * @param {Object} formFields
      */
     function handleEditClick(formFields) {
-        return function () {
+        return async function () {
             execNum++;
             if (execNum > 1) {
                 execNum--;
@@ -728,12 +728,14 @@ jQuery.noConflict();
             const rowspan = $row.find('td:first-child').attr('rowspan');
             const recordUrl = $row.find('td:first-child a').attr('href');
             const recordId = recordUrl.split("=")[1];
-            let record = null;
-            for (const item of koujiDataPerPage) {
-                if (item[cfgKoujiFields.kouji_recordNo.code].value === recordId) {
-                    record = item;
-                    break;
-                }
+            const records = await getKoujiRecord(recordId);
+            const record = records[0];
+
+            if (!record) {
+                showErrorMessage(` Error occurred.
+                The specified record (ID: ${recordId}) is not found.`);
+                execNum--;
+                return;
             }
             // 最初の行のハンドル
             $row.find('td:not(:first-child):not(:last-child)').each(function () {
@@ -940,6 +942,7 @@ jQuery.noConflict();
                     $row.remove();
                 } catch (error) {
                     showErrorMessage(error);
+                    confirmBox.remove();
                 }
             });
         }
@@ -1197,7 +1200,7 @@ jQuery.noConflict();
         console.log(error);
         Swal.fire({
             icon: 'error',
-            title: error.message
+            title: error.message ? error.message : error
         });
     }
 
