@@ -110,6 +110,10 @@ jQuery.noConflict();
 
             const displayFields = transformDisplayFields(event);
 
+            if (displayFields.length === 0) {
+                return event;
+            }
+
             nonEditFields = getNonEditFields(formFields);
             execNum = 0;
 
@@ -817,6 +821,14 @@ jQuery.noConflict();
             try {
                 const records = await getKoujiRecord(recordId);
                 const record = records[0];
+
+                if (!record) {
+                    showErrorMessage(` Error occurred.
+                    The specified record (ID: ${recordId}) is not found.`);
+                    execNum++;
+                    return;
+                }
+
                 // 最初の行のハンドル
                 $row.find('td:not(:first-child):not(:last-child)').each(function () {
                     $(this).find('input').remove();
@@ -962,13 +974,16 @@ jQuery.noConflict();
             }
             const recordUrl = $(this).closest('tr').find('td:first-child a').attr('href');
             const recordId = recordUrl.split("=")[1];
-            let oldRecord = null;
-            for (const item of koujiDataPerPage) {
-                if (item[cfgKoujiFields.kouji_recordNo.code].value === recordId) {
-                    oldRecord = item;
-                    break;
-                }
+            const oldRecords = await getKoujiRecord(recordId);
+            const oldRecord = oldRecords[0];
+
+            if (!oldRecord) {
+                showErrorMessage(` Error occurred.
+                The specified record (ID: ${recordId}) is not found.`);
+                execNum++;
+                return;
             }
+
             const $row = $(this).closest('tr');
             const rowspan = $row.find('td:first-child').attr('rowspan');
             const originalContentObj = initOriginalContent(displayFields, rowspan, oldRecord);
