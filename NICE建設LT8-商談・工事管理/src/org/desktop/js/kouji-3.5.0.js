@@ -27,6 +27,9 @@ jQuery.noConflict();
     // 編集実行回数をカウントするグローバル変数
     let execNum = 0;
     let koujiDataPerPage = null;
+    let updateTimeAtEdit = null;
+    let updateTimeAtSave = null;
+    let updateTimeAtCancel = null;
 
 
     /**
@@ -741,6 +744,9 @@ jQuery.noConflict();
                 execNum--;
                 return;
             }
+
+            updateTimeAtEdit = record[cfgKoujiFields.updatedTime.code].value;
+
             // 最初の行のハンドル
             $row.find('td:not(:first-child):not(:last-child)').each(function () {
                 const text = $(this).text();
@@ -827,6 +833,11 @@ jQuery.noConflict();
                     The specified record (ID: ${recordId}) is not found.`);
                     execNum++;
                     return;
+                }
+
+                updateTimeAtCancel = record[cfgKoujiFields.updatedTime.code].value;
+                if (updateTimeAtEdit !== updateTimeAtCancel) {
+                    showErrorMessage(`Someone has updated the record while you are editing.`);
                 }
 
                 // 最初の行のハンドル
@@ -980,6 +991,15 @@ jQuery.noConflict();
             if (!oldRecord) {
                 showErrorMessage(` Error occurred.
                 The specified record (ID: ${recordId}) is not found.`);
+                execNum++;
+                return;
+            }
+
+            updateTimeAtSave = oldRecord[cfgKoujiFields.updatedTime.code].value;
+
+            if (updateTimeAtEdit !== updateTimeAtSave) {
+                showErrorMessage(`Error occurred.
+                Please refresh the page. Someone has updated the record while you are editing.`);
                 execNum++;
                 return;
             }
