@@ -111,7 +111,7 @@ jQuery.noConflict();
             const formFields = await getKoujiAppFormFields();
             koujiDataPerPage = await getKoujiDataPerPage(event);
 
-            const displayFields = transformDisplayFields(event);
+            const displayFields = transformDisplayFields(event.viewId);
 
             if (displayFields.length === 0) {
                 return event;
@@ -131,7 +131,7 @@ jQuery.noConflict();
             // 固定ヘッダーの幅を調整する
             updateFixedHeaderWidths();
             // 固定列の左位置を設定する
-            setLeftPositionFixCols(event);
+            setLeftPositionFixCols(event.viewId);
 
             // Editボタンのクリックイベント
             $('#list_viewer_area table').on('click', '.recordlist-edit-gaia', function () {
@@ -186,17 +186,17 @@ jQuery.noConflict();
 
     /**
      * 表示フィールドを変換する
-     * @param {Object} event
+     * @param {String} viewId
      * @returns {Array} fixColsDisplayFields
      */
-    function transformDisplayFields(event) {
+    function transformDisplayFields(viewId) {
 
         let displayFields = null;
         let fixColFields = null;
 
         for (const viewKey in koujiViewCfg) {
             if (koujiViewCfg[viewKey].hasOwnProperty('viewId') && koujiViewCfg[viewKey].hasOwnProperty('fixedColumnFields') && koujiViewCfg[viewKey].hasOwnProperty('displayFields')) {
-                if (event.viewId === koujiViewCfg[viewKey].viewId) {
+                if (viewId === koujiViewCfg[viewKey].viewId) {
                     displayFields = koujiViewCfg[viewKey].displayFields;
                     fixColFields = koujiViewCfg[viewKey].fixedColumnFields;
                 }
@@ -649,20 +649,17 @@ jQuery.noConflict();
 
     /**
      * 固定列の左位置を設定する
-     * @param {Object} event
+     * @param {String} viewId
      */
-    function setLeftPositionFixCols(event) {
+    function setLeftPositionFixCols(viewId) {
         let fixColFields = null;
 
-        if (event.viewId === koujiViewCfg.shinchokuKanriView.viewId) {
-            // View 進捗管理表
-            fixColFields = koujiViewCfg.shinchokuKanriView.fixedColumnFields;
-        } else if (event.viewId === koujiViewCfg.genkaArariView.viewId) {
-            // View 原価粗利表
-            fixColFields = koujiViewCfg.genkaArariView.fixedColumnFields;
-        } else if (event.viewId === koujiViewCfg.chakkoZenBukkenView.viewId) {
-            // View 着工前物件
-            fixColFields = koujiViewCfg.chakkoZenBukkenView.fixedColumnFields;
+        for (const viewKey in koujiViewCfg) {
+            if (koujiViewCfg[viewKey].hasOwnProperty('viewId') && koujiViewCfg[viewKey].hasOwnProperty('fixedColumnFields') && koujiViewCfg[viewKey].hasOwnProperty('displayFields')) {
+                if (viewId === koujiViewCfg[viewKey].viewId) {
+                    fixColFields = koujiViewCfg[viewKey].fixedColumnFields;
+                }
+            }
         }
 
         for (let i = 0; i < fixColFields.length; i++) {
