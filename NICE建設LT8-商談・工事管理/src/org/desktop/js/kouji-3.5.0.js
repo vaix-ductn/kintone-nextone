@@ -170,6 +170,8 @@ jQuery.noConflict();
             $(window).on('scroll', function () {
                 const scrollLeft = $(this).scrollLeft();
                 $('#table-fixedheader').css('left', `-${scrollLeft}px`);
+                // スクロールするときに、入力要素のフォーカスを削除します
+                $('input').blur();
                 if ($(this).scrollTop() > 416) {
                     // 固定ヘッダーの幅を調整する
                     updateFixedHeaderWidths();
