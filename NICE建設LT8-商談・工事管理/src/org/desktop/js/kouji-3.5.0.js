@@ -654,15 +654,12 @@ jQuery.noConflict();
     function setLeftPositionFixCols(event) {
         let fixColFields = null;
 
-        if (event.viewId === koujiViewCfg.shinchokuKanriView.viewId) {
-            // View 進捗管理表
-            fixColFields = koujiViewCfg.shinchokuKanriView.fixedColumnFields;
-        } else if (event.viewId === koujiViewCfg.genkaArariView.viewId) {
-            // View 原価粗利表
-            fixColFields = koujiViewCfg.genkaArariView.fixedColumnFields;
-        } else if (event.viewId === koujiViewCfg.chakkoZenBukkenView.viewId) {
-            // View 着工前物件
-            fixColFields = koujiViewCfg.chakkoZenBukkenView.fixedColumnFields;
+        for (const viewKey in koujiViewCfg) {
+            if (koujiViewCfg[viewKey].hasOwnProperty('viewId') && koujiViewCfg[viewKey].hasOwnProperty('fixedColumnFields') && koujiViewCfg[viewKey].hasOwnProperty('displayFields')) {
+                if (event.viewId === koujiViewCfg[viewKey].viewId) {
+                    fixColFields = koujiViewCfg[viewKey].fixedColumnFields;
+                }
+            }
         }
 
         for (let i = 0; i < fixColFields.length; i++) {
