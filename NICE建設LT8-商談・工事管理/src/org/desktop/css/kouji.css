@@ -9,7 +9,6 @@
 
 #list_viewer_area {
     width: 100%;
-    overflow-x: auto;
     position: relative;
 }
 
