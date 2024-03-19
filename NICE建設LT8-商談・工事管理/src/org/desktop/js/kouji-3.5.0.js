@@ -153,23 +153,10 @@ jQuery.noConflict();
                 handleSaveClick(displayFields, formFields).call(this);
             });
 
-            // テーブルをスクロールするときに、入力要素のフォーカスを削除します
-            $('#list_viewer_area').on('scroll', function () {
-                $('input').blur();
-            });
-
             // ウィンドウのサイズ変更イベント時のハンドル
             $(window).on('resize', function () {
                 // 固定ヘッダーの幅を調整する
                 updateFixedHeaderWidths();
-            });
-
-            // イベントが左にスクロールしたときのハンドル
-            $('#list_viewer_area').on('scroll', function () {
-                const scrollLeft = $(this).scrollLeft();
-                $('#table-fixedheader').css('left', `-${scrollLeft}px`);
-                // 固定列の左位置を設定する
-                setLeftPositionFixCols(event);
             });
 
             // レコード編集時に URL リダイレクトの場合にアラートを表示する
@@ -181,6 +168,8 @@ jQuery.noConflict();
 
             // イベントが下にスクロールしたときのハンドル
             $(window).on('scroll', function () {
+                const scrollLeft = $(this).scrollLeft();
+                $('#table-fixedheader').css('left', `-${scrollLeft}px`);
                 if ($(this).scrollTop() > 416) {
                     // 固定ヘッダーの幅を調整する
                     updateFixedHeaderWidths();
@@ -205,18 +194,13 @@ jQuery.noConflict();
         let displayFields = null;
         let fixColFields = null;
 
-        if (event.viewId === koujiViewCfg.shinchokuKanriView.viewId) {
-            // View 進捗管理表
-            displayFields = koujiViewCfg.shinchokuKanriView.displayFields;
-            fixColFields = koujiViewCfg.shinchokuKanriView.fixedColumnFields;
-        } else if (event.viewId === koujiViewCfg.genkaArariView.viewId) {
-            // View 原価粗利表
-            displayFields = koujiViewCfg.genkaArariView.displayFields;
-            fixColFields = koujiViewCfg.genkaArariView.fixedColumnFields;
-        } else if (event.viewId === koujiViewCfg.chakkoZenBukkenView.viewId) {
-            // View 着工前物件
-            displayFields = koujiViewCfg.chakkoZenBukkenView.displayFields;
-            fixColFields = koujiViewCfg.chakkoZenBukkenView.fixedColumnFields;
+        for (const viewKey in koujiViewCfg) {
+            if (koujiViewCfg[viewKey].hasOwnProperty('viewId') && koujiViewCfg[viewKey].hasOwnProperty('fixedColumnFields') && koujiViewCfg[viewKey].hasOwnProperty('displayFields')) {
+                if (event.viewId === koujiViewCfg[viewKey].viewId) {
+                    displayFields = koujiViewCfg[viewKey].displayFields;
+                    fixColFields = koujiViewCfg[viewKey].fixedColumnFields;
+                }
+            }
         }
 
         const fixColsDisplayFields = mergeFixColsDisplayFields(displayFields, fixColFields);
@@ -1186,7 +1170,7 @@ jQuery.noConflict();
     function scrollRight() {
         const table = $('#table-list-viewer').get(0);
         const scrollX = table.scrollWidth;
-        $('#list_viewer_area').scrollLeft(scrollX);
+        $(window).scrollLeft(scrollX);
     }
 
     /**
