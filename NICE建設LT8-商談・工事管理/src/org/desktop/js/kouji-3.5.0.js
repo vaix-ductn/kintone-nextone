@@ -21,8 +21,8 @@
 jQuery.noConflict();
 (function ($, config, sncLib, koujiViewCfg) {
     'use strict';
-    const cfgKouji = config.kouji;
-    const cfgKoujiFields = config.kouji.fields;
+    const cfgKouji = config.anken;
+    const cfgKoujiFields = config.anken.fields;
     let nonEditFields = null;
     // 編集実行回数をカウントするグローバル変数
     let execNum = 0;
@@ -37,6 +37,7 @@ jQuery.noConflict();
      * 　フィールドの表示/非表示設定
      * 　フィールドの入力可/否 を設定
     */
+/*    
     kintone.events.on([
         'app.record.create.show',
         'app.record.edit.show',
@@ -75,12 +76,13 @@ jQuery.noConflict();
         }
         return event;
     });
-
+*/
     /**
      * レコード編集画面（追加）の表示イベント
      *   レコード追加画面において、GETパラメータに値が設定されている場合、
      * 　パラメータを取得し、フィールドへ値をセット
      */
+/*
     kintone.events.on([
         'app.record.create.show'
     ], function (event) {
@@ -95,7 +97,7 @@ jQuery.noConflict();
         }
         return event;
     });
-
+*/
     /**
      * 一覧表示イベント
      *   テーブルを含むすべてのフィールドをリストします
@@ -243,7 +245,7 @@ jQuery.noConflict();
     async function getKoujiDataPerPage(event) {
         const koujiData = await getKoujiData();
         // レコードIDで降順に並べ替えます
-        sortListByField(koujiData, cfgKoujiFields.kouji_recordNo.code, 'desc');
+        sortListByField(koujiData, cfgKoujiFields.anken_recordNo.code, 'desc');
         const viewSettings = await getViewPagerSetting();
         if (viewSettings.views[event.viewName].pager && viewSettings.views[event.viewName].pager === true) {
             const perPage = getPerPageInfo();
@@ -1228,7 +1230,7 @@ jQuery.noConflict();
     * @return {Array}
     */
     function getKoujiRecord(koujiId) {
-        const query = cfgKoujiFields.kouji_recordNo.code + ' in ("' + koujiId + '")';
+        const query = cfgKoujiFields.anken_recordNo.code + ' in ("' + koujiId + '")';
         return sncLib.kintone.rest.getRecord(cfgKouji.app, query);
     }
 
