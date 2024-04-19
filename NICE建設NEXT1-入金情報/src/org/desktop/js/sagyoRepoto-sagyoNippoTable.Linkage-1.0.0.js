@@ -211,6 +211,28 @@ jQuery.noConflict();
     }
 
     /**
+     * 日程TBテーブルレコードを生成する
+     * @param {Object} currentRecord
+     * @param {Object} subtable
+     * @param {Boolean} isEdit
+     * @returns {Array} tableRecords
+     */
+    function generateNetteiTableRecord(currentRecord, subtable, isEdit) {
+        const tableRecords = [];
+        generateTableRecord(subtable, tableRecords);
+        const nitteiTableList = cfgMeisaiLinkage.linkageFields.nitteiTableList;
+        const netteiTBRowIndex = cfgMeisaiLinkage.linkageFields.nitteiTBRowIndex - 1;
+        nitteiTableList.forEach(function (obj) {
+            if (Number(obj.itemNo) === Number(currentRecord[cfgMeisaiFields.meisaiNo.code].value)) {
+                obj.dataLink.forEach(function (item) {
+                    tableRecords[netteiTBRowIndex].value[item.targetFieldCode].value = isEdit ? currentRecord[item.sourceFieldCode].value : '';
+                });
+            }
+        });
+        return tableRecords;
+    }
+
+    /**
      * サブテーブルのソート
      * ソート用配列のキー（sortKeys）を使用し、サブテーブル配列を昇順もしくは降順にソートする。
      * orderで降順・昇順を切替える。
@@ -300,33 +322,34 @@ jQuery.noConflict();
     function addRequestRelateRecordOnDelete(currentRecord, sagyoNippoRecord, requestData) {
         // サブテーブル内容から自レコードのUUIDを持つ行を除いて、サブテーブルを再構築する
         const yoteiIchiranSubTable = sagyoNippoRecord[cfgTableAppFields.meisaiTB.code].value;
-        const rebuildSubTable = deleteOwnRowToSubTable(yoteiIchiranSubTable, currentRecord[cfgMeisaiFields.uuid.code].value);
-        // 削除後のサブテーブルをソートし直して、項番をリナンバリングする
-//        sortSubtable(rebuildSubTable, cfgMeisaiLinkage.workTableSortList, cfgMeisaiLinkage.workTableOrder);
-        updateItemNumber(rebuildSubTable, cfgTableAppFields.meisaiNo_TB.code);
-        // 自身のレコードの項番フィールドを削除
-        currentRecord[cfgMeisaiFields.meisaiNo.code].value = '';
+        // サブテーブルに自分の行を空白にする
+        blankOwnRowToSubTable(yoteiIchiranSubTable, currentRecord);
 
-        // 削除する動きに関しては関連するレコードの連携フィールドの更新は行いたくないため、currentRecordを渡す箇所にnullを渡す
+        updateItemNumber(yoteiIchiranSubTable, cfgTableAppFields.meisaiNo_TB.code);
+        // リナンバリングの結果をもとに、自身のレコードの項番フィールドを更新
+        const ownRowData = searchRowSubTableInUuid(yoteiIchiranSubTable, currentRecord[cfgMeisaiFields.uuid.code].value);
+        currentRecord[cfgMeisaiFields.meisaiNo.code].value = ownRowData.value[cfgTableAppFields.meisaiNo_TB.code].value;
+
         // 業務管理レコードの更新リクエストを発行する
-        addSagyoNippoUpdateRecord(null, sagyoNippoRecord, rebuildSubTable, requestData);
+        addSagyoNippoUpdateRecord(currentRecord, sagyoNippoRecord, yoteiIchiranSubTable, requestData);
         // 予定一覧サブテーブル内の自身以外の予定報告レコードに対して、項番を更新するリクエストを発行する
-        return addOtherYoteiHokokuUpdateRecord(currentRecord[cfgMeisaiFields.uuid.code].value, null, rebuildSubTable, requestData);
+        return addOtherYoteiHokokuUpdateRecord(currentRecord[cfgMeisaiFields.uuid.code].value, currentRecord, yoteiIchiranSubTable, requestData);
+    }
 
-        /**
-         * 業務管理から取得したサブテーブルの内容から自身の行を除いた、新しいサブテーブル配列を返す
-         * @param {*} subTable サブテーブル配列オブジェクト
-         * @param {*} targetUuid 自身のレコードのuuid
-         */
-        function deleteOwnRowToSubTable(subTable, targetUuid) {
-            const rebuildSubTable = [];
-            subTable.forEach(function (rowData) {
-                if (rowData.value[cfgTableAppFields.uuid_TB.code].value === targetUuid) return;
-                rebuildSubTable.push(rowData);
-            });
-            return rebuildSubTable;
-        }
-
+    /**
+     * サブテーブルに自分の行を空白にする
+     * @param {Object} subTable
+     * @param {Object} currentRecord
+     */
+    function blankOwnRowToSubTable(subTable, currentRecord) {
+        const ownRowData = searchRowSubTableInUuid(subTable, currentRecord[cfgMeisaiFields.uuid.code].value);
+        // コンフィグ記載のサブテーブル連携フィールドを更新する
+        const nyukinJohoTBList = cfgMeisaiLinkage.linkageFields.nyukinJohoTBList;
+        nyukinJohoTBList.forEach(function (obj) {
+            ownRowData.value[obj.targetFieldCode] = {
+                value: ''
+            };
+        });
     }
 
     /**
@@ -348,7 +371,7 @@ jQuery.noConflict();
         currentRecord[cfgMeisaiFields.meisaiNo.code].value = ownRowData.value[cfgTableAppFields.meisaiNo_TB.code].value;
 
         // 業務管理レコードの更新リクエストを発行する
-        addSagyoNippoUpdateRecord(currentRecord, sagyoNippoRecord, yoteiIchiranSubTable, requestData);
+        addSagyoNippoUpdateRecord(currentRecord, sagyoNippoRecord, yoteiIchiranSubTable, requestData, true);
         // 予定一覧サブテーブル内の自身以外の予定報告レコードに対して、項番を更新するリクエストを発行する
         return addOtherYoteiHokokuUpdateRecord(currentRecord[cfgMeisaiFields.uuid.code].value, currentRecord, yoteiIchiranSubTable, requestData);
 
@@ -360,7 +383,7 @@ jQuery.noConflict();
         function updateOwnRowToSubTable(subTable, currentRecord) {
             const ownRowData = searchRowSubTableInUuid(subTable, currentRecord[cfgMeisaiFields.uuid.code].value);
             // コンフィグ記載のサブテーブル連携フィールドを更新する
-            const renkeiSubtableFields = cfgMeisaiLinkage.linkageFields.workTableList;
+            const renkeiSubtableFields = cfgMeisaiLinkage.linkageFields.nyukinJohoTBList;
             renkeiSubtableFields.forEach(function (renkeiField) {
                 ownRowData.value[renkeiField.targetFieldCode] = {
                     value: currentRecord[renkeiField.sourceFieldCode].value
@@ -389,7 +412,7 @@ jQuery.noConflict();
      * @returns {PromiseLike} 業務管理レコードの取得リクエストのプロミス
      */
     function getSagyoNippoRecord(sagyoNippoId) {
-        let query = 'nok_案件ID' + ' = "' + sagyoNippoId + '" limit 1';        
+        let query = cfgTableAppFields.ankenId.code + ' = "' + sagyoNippoId + '" limit 1';
         const body = {
             'app': cfgTableApp.app,
             'query': query
@@ -414,12 +437,13 @@ jQuery.noConflict();
 
     /**
      * 予定報告レコードに関連する業務管理への更新リクエストデータを作成して、連携更新リクエストデータに追加する
-     * @param {*} currentRecord 処理対象のレコード
-     * @param {*} sagyoNippoRecord 関連する業務管理レコード
-     * @param {*} updateSubTableData 更新する内容の予定一覧サブテーブルデータ
-     * @param {*} requestData 連携更新リクエストデータ
+     * @param {Object} currentRecord 処理対象のレコード
+     * @param {Object} sagyoNippoRecord 関連する業務管理レコード
+     * @param {Object} updateSubTableData 更新する内容の予定一覧サブテーブルデータ
+     * @param {Array} requestData 連携更新リクエストデータ
+     * @param {Boolean} isEdit
      */
-    function addSagyoNippoUpdateRecord(currentRecord, sagyoNippoRecord, updateSubTableData, requestData) {
+    function addSagyoNippoUpdateRecord(currentRecord, sagyoNippoRecord, updateSubTableData, requestData, isEdit = false) {
         const sagyoNippoRecordId = sagyoNippoRecord[cfgTableAppFields.recordId.code].value;
         // 更新リクエストに追加する業務管理レコードを作成する
         const sagyoNippoUpdateRecord = {};
@@ -440,6 +464,12 @@ jQuery.noConflict();
         sagyoNippoUpdateRecord[cfgTableAppFields.meisaiTB.code] = {
             'value': tableRecords
         };
+
+        const netteiTableRecord = generateNetteiTableRecord(currentRecord, sagyoNippoRecord[cfgTableAppFields.nitteiTB.code].value, isEdit);
+        sagyoNippoUpdateRecord[cfgTableAppFields.nitteiTB.code] = {
+            'value': netteiTableRecord
+        };
+
         // バルクリクエスト用のデータを組み立て、連携更新リクエストデータに追加する
         buildUpdateRequests(cfgTableApp.app, [sagyoNippoRecordId], [sagyoNippoUpdateRecord], requestData);
     }

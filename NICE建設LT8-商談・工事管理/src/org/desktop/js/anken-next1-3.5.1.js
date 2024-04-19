@@ -1465,6 +1465,8 @@ return 0;
     //入金情報TB　7行目 を　日程TB上棟金3行目　　へコピー
     kintone.events.on([
         'app.record.create.change.' + 'nok_入金情報TB_入金日',
+        'app.record.create.change.' + 'nok_入金情報TB_入金金額',
+        'app.record.edit.change.' + 'nok_入金情報TB_入金日',
         'app.record.edit.change.' + 'nok_入金情報TB_入金金額',
 
     ], function (event) {
