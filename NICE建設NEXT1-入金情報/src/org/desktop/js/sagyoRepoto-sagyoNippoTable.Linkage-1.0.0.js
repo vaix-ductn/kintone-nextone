@@ -281,14 +281,14 @@ jQuery.noConflict();
      */
     function addRequestRelateRecordOnCreate(currentRecord, sagyoNippoRecord, requestData) {
         // configの連携フィールド情報を元に、業務管理の予定一覧サブテーブルに自身のレコードに対応する行を追加
-        const yoteiIchiranSubTable = sagyoNippoRecord[cfgTableAppFields.meisaiTB.code].value;
+        const yoteiIchiranSubTable = sagyoNippoRecord[cfgTableAppFields.nyukinJohoTB.code].value;
         addNewRowToSubTable(yoteiIchiranSubTable, currentRecord);
         // 追加後のサブテーブルをソートし直して、項番をリナンバリングする
 //        sortSubtable(yoteiIchiranSubTable, cfgMeisaiLinkage.workTableSortList, cfgMeisaiLinkage.workTableOrder);
-        updateItemNumber(yoteiIchiranSubTable, cfgTableAppFields.meisaiNo_TB.code);
+        updateItemNumber(yoteiIchiranSubTable, cfgTableAppFields.ko_nyukinJohoTB.code);
         // リナンバリングの結果をもとに、自身のレコードの項番フィールドを更新
         const ownRowData = searchRowSubTableInUuid(yoteiIchiranSubTable, currentRecord[cfgMeisaiFields.uuid.code].value);
-        currentRecord[cfgMeisaiFields.meisaiNo.code].value = ownRowData.value[cfgTableAppFields.meisaiNo_TB.code].value;
+        currentRecord[cfgMeisaiFields.meisaiNo.code].value = ownRowData.value[cfgTableAppFields.ko_nyukinJohoTB.code].value;
 
         // 業務管理レコードの更新リクエストを発行する
         addSagyoNippoUpdateRecord(currentRecord, sagyoNippoRecord, yoteiIchiranSubTable, requestData);
@@ -321,14 +321,14 @@ jQuery.noConflict();
      */
     function addRequestRelateRecordOnDelete(currentRecord, sagyoNippoRecord, requestData) {
         // サブテーブル内容から自レコードのUUIDを持つ行を除いて、サブテーブルを再構築する
-        const yoteiIchiranSubTable = sagyoNippoRecord[cfgTableAppFields.meisaiTB.code].value;
+        const yoteiIchiranSubTable = sagyoNippoRecord[cfgTableAppFields.nyukinJohoTB.code].value;
         // サブテーブルに自分の行を空白にする
         blankOwnRowToSubTable(yoteiIchiranSubTable, currentRecord);
 
-        updateItemNumber(yoteiIchiranSubTable, cfgTableAppFields.meisaiNo_TB.code);
+        updateItemNumber(yoteiIchiranSubTable, cfgTableAppFields.ko_nyukinJohoTB.code);
         // リナンバリングの結果をもとに、自身のレコードの項番フィールドを更新
         const ownRowData = searchRowSubTableInUuid(yoteiIchiranSubTable, currentRecord[cfgMeisaiFields.uuid.code].value);
-        currentRecord[cfgMeisaiFields.meisaiNo.code].value = ownRowData.value[cfgTableAppFields.meisaiNo_TB.code].value;
+        currentRecord[cfgMeisaiFields.meisaiNo.code].value = ownRowData.value[cfgTableAppFields.ko_nyukinJohoTB.code].value;
 
         // 業務管理レコードの更新リクエストを発行する
         addSagyoNippoUpdateRecord(currentRecord, sagyoNippoRecord, yoteiIchiranSubTable, requestData);
@@ -361,14 +361,14 @@ jQuery.noConflict();
      */
     function addRequestRelateRecordOnEdit(currentRecord, sagyoNippoRecord, requestData) {
         // サブテーブル内容から自レコードのUUIDを持つ行の内容を更新して、サブテーブルを再構築する
-        const yoteiIchiranSubTable = sagyoNippoRecord[cfgTableAppFields.meisaiTB.code].value;
+        const yoteiIchiranSubTable = sagyoNippoRecord[cfgTableAppFields.nyukinJohoTB.code].value;
         updateOwnRowToSubTable(yoteiIchiranSubTable, currentRecord);
         // 更新後のサブテーブルをソートし直して、項番をリナンバリングする
 //        sortSubtable(yoteiIchiranSubTable, cfgMeisaiLinkage.workTableSortList, cfgMeisaiLinkage.workTableOrder);
-        updateItemNumber(yoteiIchiranSubTable, cfgTableAppFields.meisaiNo_TB.code);
+        updateItemNumber(yoteiIchiranSubTable, cfgTableAppFields.ko_nyukinJohoTB.code);
         // リナンバリングの結果をもとに、自身のレコードの項番フィールドを更新
         const ownRowData = searchRowSubTableInUuid(yoteiIchiranSubTable, currentRecord[cfgMeisaiFields.uuid.code].value);
-        currentRecord[cfgMeisaiFields.meisaiNo.code].value = ownRowData.value[cfgTableAppFields.meisaiNo_TB.code].value;
+        currentRecord[cfgMeisaiFields.meisaiNo.code].value = ownRowData.value[cfgTableAppFields.ko_nyukinJohoTB.code].value;
 
         // 業務管理レコードの更新リクエストを発行する
         addSagyoNippoUpdateRecord(currentRecord, sagyoNippoRecord, yoteiIchiranSubTable, requestData, true);
@@ -430,7 +430,7 @@ jQuery.noConflict();
     function searchRowSubTableInUuid(subTable, targetUuid) {
         for (let i = 0; i < subTable.length; i++) {
 //            if (subTable[i].value[cfgMeisaiFields.uuid.code].value === targetUuid) return subTable[i];
-            if (subTable[i].value[cfgTableAppFields.uuid_TB.code].value === targetUuid) return subTable[i];            
+            if (subTable[i].value[cfgTableAppFields.uuid_nyukinJohoTB.code].value === targetUuid) return subTable[i];            
         }
         throw new Error('uuid not found in subtable');
     }
@@ -461,7 +461,7 @@ jQuery.noConflict();
         // 予定一覧サブテーブルの内容更新
         const tableRecords = [];
         generateTableRecord(updateSubTableData, tableRecords);
-        sagyoNippoUpdateRecord[cfgTableAppFields.meisaiTB.code] = {
+        sagyoNippoUpdateRecord[cfgTableAppFields.nyukinJohoTB.code] = {
             'value': tableRecords
         };
 
@@ -498,9 +498,9 @@ jQuery.noConflict();
             const targetUuidList = [];
             subTable.forEach(function (tableRow) {
 //                if (tableRow.value[cfgMeisaiFields.uuid.code].value === ownUuid) return;                
-                if (tableRow.value[cfgTableAppFields.uuid_TB.code].value === ownUuid) return;
+                if (tableRow.value[cfgTableAppFields.uuid_nyukinJohoTB.code].value === ownUuid) return;
 //                targetUuidList.push('"' + tableRow.value[cfgMeisaiFields.uuid.code].value + '"');
-                targetUuidList.push('"' + tableRow.value[cfgTableAppFields.uuid_TB.code].value + '"');                
+                targetUuidList.push('"' + tableRow.value[cfgTableAppFields.uuid_nyukinJohoTB.code].value + '"');                
             });
             let query = cfgMeisaiFields.uuid.code + ' in (' + targetUuidList.join() + ')';
             return sncLib.kintone.rest.getAllRecordsOnRecordId(kintone.app.getId(), query);
@@ -530,9 +530,9 @@ jQuery.noConflict();
                 // リナンバリングされたサブテーブルデータを元に、対象の予定報告レコードの項番を更新する
                 const currentUuid = record[cfgMeisaiFields.uuid.code].value;
                 const currentRowData = searchRowSubTableInUuid(subTable, currentUuid);
-                yoteiHokokuUpdateRecord[cfgTableAppFields.meisaiNo_TB.code] = {
+                yoteiHokokuUpdateRecord[cfgTableAppFields.ko_nyukinJohoTB.code] = {
 //                    value: currentRowData.value[cfgMeisaiFields.meisai_No.code].value
-                    value: currentRowData.value[cfgTableAppFields.meisaiNo_TB.code].value                    
+                    value: currentRowData.value[cfgTableAppFields.ko_nyukinJohoTB.code].value                    
                 };
                 updateIdList.push(record[cfgMeisaiFields.recordId.code].value);
                 updateRecords.push(yoteiHokokuUpdateRecord);
