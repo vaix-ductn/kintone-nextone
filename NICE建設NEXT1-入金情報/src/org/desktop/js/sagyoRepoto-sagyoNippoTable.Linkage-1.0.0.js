@@ -530,7 +530,7 @@ jQuery.noConflict();
                 // リナンバリングされたサブテーブルデータを元に、対象の予定報告レコードの項番を更新する
                 const currentUuid = record[cfgMeisaiFields.uuid.code].value;
                 const currentRowData = searchRowSubTableInUuid(subTable, currentUuid);
-                yoteiHokokuUpdateRecord[cfgTableAppFields.ko_nyukinJohoTB.code] = {
+                yoteiHokokuUpdateRecord[cfgMeisaiFields.meisaiNo.code] = {
 //                    value: currentRowData.value[cfgMeisaiFields.meisai_No.code].value
                     value: currentRowData.value[cfgTableAppFields.ko_nyukinJohoTB.code].value                    
                 };
