@@ -111,7 +111,7 @@ jQuery.noConflict();
 
         try {
             const formFields = await getKoujiAppFormFields();
-            koujiDataPerPage = await getKoujiDataPerPage(event);
+            koujiDataPerPage = await getKoujiDataPerPage();
 
             const displayFields = transformDisplayFields(event.viewId);
 
@@ -239,30 +239,12 @@ jQuery.noConflict();
 
     /**
      * ページごとの工事データを取得する
-     * @param {Object} event
      * @returns {Array}
      */
-    async function getKoujiDataPerPage(event) {
+    async function getKoujiDataPerPage() {
         const koujiData = await getKoujiData();
-        // レコードIDで降順に並べ替えます
-        sortListByField(koujiData, cfgKoujiFields.anken_recordNo.code, 'desc');
-        const viewSettings = await getViewPagerSetting();
-        if (viewSettings.views[event.viewName].pager && viewSettings.views[event.viewName].pager === true) {
-            const perPage = getPerPageInfo();
-            return koujiData.slice(perPage.from - 1, perPage.to);
-        }
-    }
-
-    /**
-     * フィールドごとにリストを並べ替える
-     * @param {Array} array
-     * @param {String} field
-     * @param {String} option
-     */
-    function sortListByField(array, field, option) {
-        array.sort(function (a, b) {
-            return option === 'desc' ? b[field].value - a[field].value : a[field].value - b[field].value;
-        });
+        const koujiDataArr = koujiData.records;
+        return koujiDataArr;
     }
 
     /**
@@ -270,37 +252,12 @@ jQuery.noConflict();
      * @returns {Promise}
      */
     function getKoujiData() {
-        return sncLib.kintone.rest.getAllRecordsOnRecordId(
-            cfgKouji.app,
-            '',
-        );
+        const body = {
+            'app': cfgKouji.app,
+            'query': kintone.app.getQuery(),
+        };
+        return kintone.api(kintone.api.url('/k/v1/records.json', true), 'GET', body);
     };
-
-    /**
-     * ビューページャ設定を取得する
-     * @returns {Promise}
-     */
-    function getViewPagerSetting() {
-        return kintone.api('/k/v1/preview/app/views', 'GET', { 'app': cfgKouji.app });
-    }
-
-    /**
-     * ページごとの情報を取得する
-     * @returns {Object} perPageObj
-     */
-    function getPerPageInfo() {
-        const perPageObj = {}
-        const pagerElem = $('.gaia-argoui-app-index-pager:first');
-        if (pagerElem) {
-            const perPageInfo = pagerElem.find('span:first').text();
-            const numberRegex = /\d+/g;
-            if (perPageInfo) {
-                perPageObj.from = perPageInfo.match(numberRegex)[0];
-                perPageObj.to = perPageInfo.match(numberRegex)[1];
-            }
-        }
-        return perPageObj;
-    }
 
     /**
      * 編集以外のフィールドを取得する

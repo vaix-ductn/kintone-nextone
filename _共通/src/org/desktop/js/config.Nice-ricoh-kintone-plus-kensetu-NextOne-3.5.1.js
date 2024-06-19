@@ -11,7 +11,7 @@
 
         // 顧客マスタアプリの設定
         kokyaku: {
-            app: 3099,
+            app: 1248,
             fields: {
                 'kokyakuId': {
                     'code': 'nok_顧客ID',
@@ -79,7 +79,7 @@
 
         //案件（工事）管理アプリの設定
         anken: {
-            app: 3098,
+            app: 1247,
             fields: {
                 //--担当者------------------------------------------------------
                 'tantoshaSearch': {
@@ -306,6 +306,11 @@
                     'shown': true,
                     'disabled': false
                 },
+                'bunjoChiMei': {
+                    'code': 'nok_分譲地名',
+                    'shown': true,
+                    'disabled': false
+                },
                 'ginkoMei': {
                     'code': 'nok_銀行名',
                     'shown': true,
@@ -315,7 +320,27 @@
                     'code': 'nok_銀行支店名',
                     'shown': true,
                     'disabled': false
-                },                 
+                },
+                'keiyakuBiYotei': {
+                    'code': 'nok_契約日_予定',
+                    'shown': true,
+                    'disabled': false
+                },
+                'chakkoBiYotei': {
+                    'code': 'nok_着工日_予定',
+                    'shown': true,
+                    'disabled': false
+                },
+                'jotoBiYotei': {
+                    'code': 'nok_上棟日_予定',
+                    'shown': true,
+                    'disabled': false
+                },
+                'hikiwatashiBiYotei': {
+                    'code': 'nok_引渡日_予定',
+                    'shown': true,
+                    'disabled': false
+                },
                 //--担当者テーブル------------------------------------------------
                 'tantoshaTB': {
                     'code': 'nok_担当者TB',
@@ -417,6 +442,9 @@
                 'jotoKinNyuKinBi_nitteiTB': {
                     'code': 'nok_日程TB_上棟金入金日'
                 },
+                'jotoKinKingaku_nitteiTB': {
+                    'code': 'nok_日程TB_上棟金金額'
+                },
                 'jotoKin_nitteiTB': {
                     'code': 'nok_日程TB_上棟金'
                 },
@@ -455,7 +483,55 @@
                 },
                 'hikiwatashiBi_nitteiTB': {
                     'code': 'nok_日程TB_引渡日'
-                },                
+                },
+                'ukeoiTetsukeKinNyukinBi_nitteiTB': {
+                    'code': 'nok_日程TB_請負手付金入金日'
+                },
+                'ukeoiTetsukeKinKingaku_nitteiTB': {
+                    'code': 'nok_日程TB_請負手付金金額'
+                },
+                'chukaiTesuryo1NyukinBi_nitteiTB': {
+                    'code': 'nok_日程TB_仲介手数料1入金日'
+                },
+                'chukaiTesuryo1_nitteiTB': {
+                    'code': 'nok_日程TB_仲介手数料1'
+                },
+                'chukaiTesuryo2NyukinBi_nitteiTB': {
+                    'code': 'nok_日程TB_仲介手数料2入金日'
+                },
+                'chukaiTesuryo2_nitteiTB': {
+                    'code': 'nok_日程TB_仲介手数料2'
+                },
+                'fudosanTetsukeKinNyukinBi_nitteiTB': {
+                    'code': 'nok_日程TB_不動産手付金入金日'
+                },
+                'fudosanTetsukeKinKingaku_nitteiTB': {
+                    'code': 'nok_日程TB_不動産手付金金額'
+                },
+                'fudosanSaishuKinNyukinBi_nitteiTB': {
+                    'code': 'nok_日程TB_不動産最終金入金日'
+                },
+                'fudosanSaishuKinKingaku_nitteiTB': {
+                    'code': 'nok_日程TB_不動産最終金金額'
+                },
+                'chakkokKinNyukinBi_nitteiTB': {
+                    'code': 'nok_日程TB_着工金入金日'
+                },
+                'chakkokKinKingaku_nitteiTB': {
+                    'code': 'nok_日程TB_着工金金額'
+                },
+                'saishuKinNyukinBi_nitteiTB': {
+                    'code': 'nok_日程TB_最終金入金日'
+                },
+                'saishuKinKingaku_nitteiTB': {
+                    'code': 'nok_日程TB_最終金金額'
+                },
+                'saishuKinTsuikaNyukinBi_nitteiTB': {
+                    'code': 'nok_日程TB_最終金追加入金日'
+                },
+                'saishuKinTsuikaKingaku_nitteiTB': {
+                    'code': 'nok_日程TB_最終金追加金額'
+                },
                 //--売上原価テーブル------------------------------------------------
                 'genkaUriageTB': {
                     'code': 'nok_原価売上TB',
@@ -532,7 +608,13 @@
                 'uuid_nyukinJohoTB': {
                     'code': 'nok_入金情報TB_uuid',
                     'shown': false,
-                },            
+                },
+                'nyukinBi_nyukinJohoTB': {
+                    'code': 'nok_入金情報TB_入金日',
+                },
+                'nyukinKingaku_nyukinJohoTB': {
+                    'code': 'nok_入金情報TB_入金金額',
+                },
                 //--その他テーブル------------------------------------------------
                 'sonohokaTB': {
                     'code': 'nok_その他TB',
@@ -861,7 +943,7 @@
 
         // カレンダー表示設定アプリの設定
         view: {
-            app: 24548,
+            app: 1252,
             fields: {
                 //--表示設定------------------------------------------------------------
                 'hyojiMeisho': {
@@ -911,7 +993,7 @@
 
         // 入金情報アプリの設定
         nyukinJhoho: {
-            app: 3102,
+            app: 1250,
             fields: {
                 //--担当者--------------------------------------------------------------
                 'tantoshaSearch': {
@@ -1001,6 +1083,51 @@
                 'uuid': { // UUID格納フィールドとして追加
                     'code': 'nok_uuid',
                     'shown': false,
+                },
+                'bunjoChiMei': {
+                    'code': 'nok_分譲地名',
+                    'shown': true,
+                    'disabled': false
+                },
+                'ginkoMei': {
+                    'code': 'nok_銀行名',
+                    'shown': true,
+                    'disabled': false
+                },
+                'ginkoSitenMei': {
+                    'code': 'nok_銀行支店名',
+                    'shown': true,
+                    'disabled': false
+                },
+                'nyukinBi': {
+                    'code': 'nok_入金日',
+                    'shown': true,
+                    'disabled': false
+                },
+                'nyukinKingaku': {
+                    'code': 'nok_入金金額',
+                    'shown': true,
+                    'disabled': false
+                },
+                'keiyakuBi': {
+                    'code': 'nok_契約日',
+                    'shown': true,
+                    'disabled': false
+                },
+                'chakkoBi': {
+                    'code': 'nok_着工日',
+                    'shown': true,
+                    'disabled': false
+                },
+                'jotoBi': {
+                    'code': 'nok_上棟日',
+                    'shown': true,
+                    'disabled': false
+                },
+                'hikiwatashiBi': {
+                    'code': 'nok_引渡日',
+                    'shown': true,
+                    'disabled': false
                 },
                 //--システム------------------------------------------------------------
                 'systemInfoGroup': {
@@ -1889,6 +2016,7 @@
         // 管理ユーザー情報
         kanriUsers: [
             //			'Administrator',
+            'huongbls'
         ],
         // 管理者（名寄せ）
         nayose_kanriUsers: [
