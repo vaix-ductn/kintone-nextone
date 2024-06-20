@@ -40,6 +40,31 @@ jQuery.noConflict();
     });
 
     /**
+     * レコードインデックス画面のイベント表示
+     * 前のURLにリダイレクトし、スクロール位置を復元します
+     */
+    kintone.events.on([
+        'app.record.index.show',
+    ], function (event) {
+        const isRedirect = JSON.parse(localStorage.getItem('isRedirect')) || null;
+        const isChangeHash = JSON.parse(localStorage.getItem('isChangeHash')) || null;
+        if (isRedirect || isChangeHash) {
+            restoreScrollPosition();
+            const urlHash = localStorage.getItem('urlHash');
+            if (urlHash) {
+                window.location.hash = urlHash;
+                localStorage.setItem('isChangeHash', true);
+                localStorage.removeItem('urlHash');
+                return event;
+            }
+        }
+        localStorage.removeItem('isRedirect');
+        localStorage.removeItem('isChangeHash');
+
+        return event;
+    });
+
+    /**
      * レコード編集画面(追加)の表示イベント
      * 編集前レコード保存を行う
      */
@@ -140,6 +165,30 @@ jQuery.noConflict();
     });
 
     /**
+     * インライン編集に成功したとき
+     * リダイレクトURLを設定する
+     */
+    kintone.events.on([
+        'app.record.index.edit.submit.success'
+    ], function (event) {
+        const currentUrl = window.location.href;
+        const url = new URL(currentUrl);
+        const urlPath = `${url.pathname}${url.search}`;
+        const urlHash = `${url.hash}`;
+        const scrollTop = document.documentElement.scrollTop;
+        const scrollLeft = document.documentElement.scrollLeft;
+
+        localStorage.setItem('isRedirect', true);
+        localStorage.setItem('urlHash', urlHash);
+        localStorage.setItem('scrollTop', scrollTop);
+        localStorage.setItem('scrollLeft', scrollLeft);
+
+        event.url = urlPath;
+        return event;
+     });
+
+
+    /**
      * レコード削除前イベント
      * 関連する業務管理レコードのサブテーブル行削除を行う
      */
@@ -171,6 +220,17 @@ jQuery.noConflict();
                 return false;
             });
     });
+
+    /**
+     * スクロール位置を復元
+     */
+    function restoreScrollPosition() {
+        const scrollTop = localStorage.getItem('scrollTop');
+        const scrollLeft = localStorage.getItem('scrollLeft');
+        if (scrollTop !== null && scrollLeft !== null) {
+            window.scrollTo(parseInt(scrollLeft, 10), parseInt(scrollTop, 10));
+        }
+    }
 
     function generateUuid() {
         let format = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('');
